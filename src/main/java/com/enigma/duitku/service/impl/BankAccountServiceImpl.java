@@ -109,8 +109,6 @@ public class BankAccountServiceImpl implements BankAccountService {
                 Wallet userWallet = optionalUser.get().getWallet();
                 userWallet.setBalance(userWallet.getBalance() + amount);
 
-                TransactionResponse transaction =transactionService.addTransaction(optionalUser.get().getWallet().getId(), "Wallet Top Up", "E=Wallet Transaction", request.getAmount(), null);
-
                 bankAccountRepository.saveAndFlush(bankAccount);
 
                 return BankAccountResponse.builder()

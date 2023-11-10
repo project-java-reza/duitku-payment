@@ -3,8 +3,11 @@ package com.enigma.duitku.controller;
 import com.enigma.duitku.entity.User;
 import com.enigma.duitku.exception.UserException;
 import com.enigma.duitku.model.response.CommonResponse;
+import com.enigma.duitku.model.response.PagingResponse;
+import com.enigma.duitku.model.response.UserResponse;
 import com.enigma.duitku.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -29,13 +32,22 @@ public class UserController {
     }
 
     @GetMapping
-    public ResponseEntity<?> getAllUser() {
-        List<User> Users = userService.getAll();
+    public ResponseEntity<?> getAllUser(
+            @RequestParam(name = "page", required = false, defaultValue = "0")Integer page,
+            @RequestParam(name = "size", required = false, defaultValue = "5")Integer size
+    ) {
+        Page<UserResponse> userResponses = userService.getAll(page, size);
+        PagingResponse pagingResponse = PagingResponse.builder()
+                .currentPage(page)
+                .totalPage(userResponses.getTotalPages())
+                .size(size)
+                .build();
         return ResponseEntity.status(HttpStatus.OK)
                 .body(CommonResponse.builder()
                         .statusCode(HttpStatus.OK.value())
                         .message("Successfully get all user")
-                        .data(Users)
+                        .data(userResponses.getContent())
+                        .paging(pagingResponse)
                         .build());
     }
 
