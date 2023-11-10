@@ -28,7 +28,6 @@ public class UserController {
                         .build());
     }
 
-
     @GetMapping
     public ResponseEntity<?> getAllUser() {
         List<User> Users = userService.getAll();

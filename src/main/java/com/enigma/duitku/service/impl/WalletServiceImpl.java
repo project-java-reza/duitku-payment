@@ -29,64 +29,7 @@ import java.util.Optional;
 @Slf4j
 public class WalletServiceImpl implements WalletService {
 
-    private final UserRepository userRepository;
-
-    private final BankAccountRepository bankAccountRepository;
-
-    private final TransactionService transactionService;
-
     private final WalletRepository walletRepository;
-
-    @Override
-    public TransactionResponse addMoneyToWallet(TransactionRequest request) {
-
-        Optional<User> optionalUser = userRepository.findById(request.getMobileNumber());
-
-            if(optionalUser.isPresent()) {
-
-                User user = optionalUser.get();
-                Wallet wallet = user.getWallet();
-                Double walletAvailableBalance = wallet.getBalance();
-                Optional<BankAccount> optionalBankAccount = bankAccountRepository.findById(user.getMobileNumber());
-
-                if(optionalBankAccount.isPresent()) {
-
-                    BankAccount bankAccount = optionalBankAccount.get();
-                    Double availableBalance = bankAccount.getBalance();
-
-                    if(availableBalance >= request.getAmount()) {
-
-                        wallet.setBalance(walletAvailableBalance + request.getAmount());
-
-                        TransactionRequest transaction = new TransactionRequest();
-                        user.getMobileNumber();
-                        transaction.setDescription("Wallet Top Up");
-                        transaction.setTransactionType("E-Wallet Transaction");
-                        transaction.setAmount(request.getAmount());
-                        transactionService.addTransaction(transaction);
-
-                        if(transaction != null) {
-                            bankAccount.setBalance(availableBalance - request.getAmount());
-                            bankAccountRepository.saveAndFlush(bankAccount);
-                            walletRepository.saveAndFlush(wallet);
-                        } else {
-                            throw new RuntimeException("Sorry Transaction Failed");
-                        }
-
-                    } else {
-                        throw new RuntimeException("Insufficient Funds!" + availableBalance);
-                    }
-
-                } else {
-                    throw new RuntimeException("No Registered Bank Account Found With This Mobile Number " + user.getMobileNumber());
-                }
-            }
-
-        return TransactionResponse.builder()
-                .amount(request.getAmount())
-                .description(request.getDescription())
-                .build();
-    }
 
     @Override
     public TransactionResponse transferMoney(TransactionRequest request) {

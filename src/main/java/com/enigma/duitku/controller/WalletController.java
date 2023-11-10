@@ -36,18 +36,6 @@ public class WalletController {
                         .build());
     }
 
-    @PostMapping(value = "transfer/towallet")
-    public ResponseEntity<?> addMoneyToWallet(@RequestBody TransactionRequest request) throws BankAccountException, WalletException {
-         TransactionResponse transactionResponse= walletService.addMoneyToWallet(request);
-
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(CommonResponse.builder()
-                        .statusCode(HttpStatus.CREATED.value())
-                        .data(transactionResponse)
-                        .message("Sucessfully add money to wallet")
-                        .build());
-    }
-
     @GetMapping(value="wallet/{id}")
     public ResponseEntity<?> getWalletById(@PathVariable String id) {
         return ResponseEntity.status(HttpStatus.OK)

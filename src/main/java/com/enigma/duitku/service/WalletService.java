@@ -16,8 +16,6 @@ public interface WalletService {
 
         TransactionResponse transferMoney(TransactionRequest transaction);
 
-        TransactionResponse addMoneyToWallet(TransactionRequest request)throws WalletException, BankAccountException;
-
         Wallet getById(String id);
 
 }

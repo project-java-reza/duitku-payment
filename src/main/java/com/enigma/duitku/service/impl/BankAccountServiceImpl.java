@@ -1,14 +1,20 @@
 package com.enigma.duitku.service.impl;
 
 import com.enigma.duitku.entity.BankAccount;
+import com.enigma.duitku.entity.Transaction;
 import com.enigma.duitku.entity.User;
 import com.enigma.duitku.entity.Wallet;
 import com.enigma.duitku.exception.UserException;
 import com.enigma.duitku.model.request.BankAccountRequest;
+import com.enigma.duitku.model.request.TransactionRequest;
 import com.enigma.duitku.model.response.BankAccountResponse;
+import com.enigma.duitku.model.response.TransactionResponse;
 import com.enigma.duitku.repository.BankAccountRepository;
+import com.enigma.duitku.repository.TransactionRepository;
 import com.enigma.duitku.repository.UserRepository;
+import com.enigma.duitku.repository.WalletRepository;
 import com.enigma.duitku.service.BankAccountService;
+import com.enigma.duitku.service.TransactionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -26,6 +32,12 @@ public class BankAccountServiceImpl implements BankAccountService {
     private final UserRepository userRepository;
 
     private final BankAccountRepository bankAccountRepository;
+
+    private final TransactionRepository transactionRepository;
+
+    private final TransactionService transactionService;
+
+    private final WalletRepository walletRepository;
 
     @Override
     public BankAccountResponse addAccount(BankAccountRequest request) {
@@ -96,6 +108,8 @@ public class BankAccountServiceImpl implements BankAccountService {
 
                 Wallet userWallet = optionalUser.get().getWallet();
                 userWallet.setBalance(userWallet.getBalance() + amount);
+
+                TransactionResponse transaction =transactionService.addTransaction(optionalUser.get().getWallet().getId(), "Wallet Top Up", "E=Wallet Transaction", request.getAmount(), null);
 
                 bankAccountRepository.saveAndFlush(bankAccount);
 

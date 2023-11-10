@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface TransactionService {
 
-    TransactionResponse addTransaction(TransactionRequest transactionRequest);
+    TransactionResponse addTransaction(String receiver, String description, String transationType, Double amount, String mobileNumber);
 
     Transaction viewTransactionId(String transationId);
 
