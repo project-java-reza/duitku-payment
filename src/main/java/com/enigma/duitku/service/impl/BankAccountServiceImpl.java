@@ -103,6 +103,7 @@ public class BankAccountServiceImpl implements BankAccountService {
                         .mobileNumber(request.getMobileNumber())
                         .bankName("Top Up Success")
                         .balance(bankAccount.getBalance())
+                        .accountNo(bankAccount.getAccountNo())
                         .build();
             }else {
                 return BankAccountResponse.builder()
