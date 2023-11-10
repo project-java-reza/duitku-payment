@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface BeneficiaryService {
 
-    BeneficiaryResponse addBeneficiary(BeneficiaryRequest request);
+    BeneficiaryResponse addBeneficiary(BeneficiaryRequest request, String token);
 
     List<BeneficiaryResponse> viewAllBeneficiaries();
 
