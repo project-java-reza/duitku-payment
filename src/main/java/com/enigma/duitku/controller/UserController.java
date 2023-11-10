@@ -31,6 +31,7 @@ public class UserController {
                         .build());
     }
 
+    // Admin
     @GetMapping
     public ResponseEntity<?> getAllUser(
             @RequestParam(name = "page", required = false, defaultValue = "0")Integer page,
