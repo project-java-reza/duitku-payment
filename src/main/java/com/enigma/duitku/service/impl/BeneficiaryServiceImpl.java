@@ -3,6 +3,7 @@ package com.enigma.duitku.service.impl;
 import com.enigma.duitku.entity.Beneficiary;
 import com.enigma.duitku.entity.User;
 import com.enigma.duitku.entity.Wallet;
+import com.enigma.duitku.exception.BeneficiaryException;
 import com.enigma.duitku.model.request.BeneficiaryRequest;
 import com.enigma.duitku.model.response.BeneficiaryResponse;
 import com.enigma.duitku.repository.BeneficiaryRepository;
@@ -14,6 +15,7 @@ import com.enigma.duitku.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.security.auth.login.LoginException;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
@@ -111,8 +113,56 @@ public class BeneficiaryServiceImpl implements BeneficiaryService {
     }
 
     @Override
-    public String deleteByMobileNumber(String beneficiaryMobileNumber) {
+    public String deleteByMobileNumber(String beneficiaryMobileNumber, String token) throws BeneficiaryException, LoginException {
 
-        return null;
+        String loggedInUserId = jwtUtils.extractUserId(token);
+        User user = userService.getById(loggedInUserId);
+
+        if(user != null) {
+            Wallet wallet = user.getWallet();
+            List<Beneficiary> beneficiaryList = wallet.getListOfBeneficiaries();
+
+            if(!beneficiaryList.isEmpty()) {
+
+                Beneficiary targetBeneficiary= null;
+
+                for (Beneficiary b : beneficiaryList) {
+                    if (Objects.equals(b.getMobileNumber(), beneficiaryMobileNumber)) {
+                        targetBeneficiary= b;
+                    }
+                }
+
+                if(targetBeneficiary != null) {
+                    Beneficiary deleteBeneficiary = null;
+                    Boolean flag = false;
+
+                    for (Beneficiary b : beneficiaryList) {
+                        if(Objects.equals(b.getMobileNumber(), beneficiaryMobileNumber)) {
+                            deleteBeneficiary = b;
+                            flag = true;
+                        }
+                    }
+
+                    if(deleteBeneficiary != null && flag) {
+                        beneficiaryList.remove(deleteBeneficiary);
+                        wallet.setListOfBeneficiaries(beneficiaryList);
+                        walletRepository.save(wallet);
+                        beneficiaryRepository.delete(deleteBeneficiary);
+
+                        return "Beneficiary has been Successfully deleted";
+                    } else {
+                        throw new BeneficiaryException("No Registered Beneficiary Found with this Mobile Number : " + beneficiaryMobileNumber);
+                    }
+
+                }else {
+                    throw new BeneficiaryException("No Registered Beneficiary Found with this Mobile Number : " + beneficiaryMobileNumber);
+                }
+
+            }else {
+                throw new LoginException("Please Log In !");
+            }
+
+        }
+        return "Beneficiary has been Successfully deleted\"";
     }
 }

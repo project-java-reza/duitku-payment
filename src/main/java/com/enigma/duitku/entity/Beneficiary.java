@@ -17,7 +17,7 @@ public class Beneficiary {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer beneficiaryId;
 
-    @Column(name= "mobile_phone", length = 12, nullable = false)
+    @Column(name= "mobile_number", length = 12, nullable = false)
     private String mobileNumber;
 
     @Column(length = 20, nullable = false)
