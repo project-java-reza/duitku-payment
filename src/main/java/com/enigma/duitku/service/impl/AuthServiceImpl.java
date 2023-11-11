@@ -64,11 +64,11 @@ public class AuthServiceImpl implements AuthService {
             userService.create(user);
 
             Wallet wallet = new Wallet();
-            wallet.setBalance(wallet.getBalance());
+            wallet.setBalance(0.0);
 
             return RegisterResponse.builder()
                     .mobileNumber(user.getMobileNumber())
-                    .balance(user.getWallet().getBalance())
+                    .balance(wallet.getBalance())
                     .email(user.getEmail())
                     .build();
 
