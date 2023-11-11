@@ -59,7 +59,6 @@ class AuthServiceImplTest {
 
     @Test
     public void registerUsers_shouldSucceed() throws UserException {
-        // Arrange
         AuthRequest authRequest = new AuthRequest();
         authRequest.setEmail("dim4211@gmail.com");
         authRequest.setPassword("apakahkamutau");
@@ -109,7 +108,6 @@ class AuthServiceImplTest {
 
     @Test
     void testRegisterUsersConflictException() throws UserException {
-        // Mocking
         AuthRequest authRequest = new AuthRequest();
         authRequest.setEmail("dim4211@gmail.com");
         authRequest.setPassword("apakahkamutau");
@@ -199,7 +197,6 @@ class AuthServiceImplTest {
 
     @Test
     public void login_shouldSucceed() {
-
         AuthRequest request = AuthRequest.builder()
                 .mobileNumber("08946437457")
                 .password("gatau")
