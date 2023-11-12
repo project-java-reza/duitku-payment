@@ -44,6 +44,8 @@ public class SecurityConfiguration {
                 .authorizeRequests()
                 .antMatchers("/api/auth/**").permitAll()
                 .antMatchers(HttpMethod.GET, "/api/products").permitAll()
+                .antMatchers(HttpMethod.GET, "/api/auth").hasRole("ADMIN")
+                .antMatchers(HttpMethod.GET, "/api/address/allAddresses").hasRole("ADMIN")
                 .anyRequest().authenticated()
                 .and().addFilterBefore(authTokenFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
