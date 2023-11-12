@@ -11,7 +11,9 @@ import com.enigma.duitku.security.JwtUtils;
 import com.enigma.duitku.service.AddressService;
 import com.enigma.duitku.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 @Service
 @RequiredArgsConstructor
@@ -30,8 +32,8 @@ public class AddressServiceImpl implements AddressService {
 
         if(user != null) {
 
-            if (user.getAddress() == null) {
-                user.setAddress(new Address());
+            if (user.getAddress() != null) {
+                throw new UserException("User already has an address");
             }
 
             Address address = new Address();
@@ -44,7 +46,6 @@ public class AddressServiceImpl implements AddressService {
             addressRepository.save(address);
             userRepository.save(user);
 
-
             return AddressResponse.builder()
                     .state(user.getAddress().getState())
                     .city(user.getAddress().getCity())
@@ -53,6 +54,53 @@ public class AddressServiceImpl implements AddressService {
                     .build();
         } else {
             throw new UserException("Please Login in!");
+        }
+    }
+
+    @Override
+    public AddressResponse updateAddress(AddressRequest addressRequest, String token) throws UserException {
+        String loggedInUserId = jwtUtils.extractUserId(token);
+        User user = userService.getById(loggedInUserId);
+
+        if(user != null) {
+
+           Address currentAddress = addressRepository.findById(addressRequest.getId()).orElse(null);
+
+            currentAddress.setState(addressRequest.getState());
+            currentAddress.setCity(addressRequest.getCity());
+            currentAddress.setStreetName(addressRequest.getStreetName());
+            currentAddress.setPostalCode(addressRequest.getPostalCode());
+
+            addressRepository.saveAndFlush(currentAddress);
+
+            return AddressResponse.builder()
+                    .postalCode(addressRequest.getPostalCode())
+                    .streetName(addressRequest.getStreetName())
+                    .state(addressRequest.getState())
+                    .build();
+        } else {
+            throw new UserException("Please Login in!");
+        }
+    }
+
+    @Override
+    public Address getAddressId(String id) {
+        return addressRepository.findById(id).orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND, "address id not found"));
+    }
+
+    @Override
+    public void removeAddress(String id, String token) {
+        String loggedInUserId = jwtUtils.extractUserId(token);
+        User userValidate = userService.getById(loggedInUserId);
+
+        if(userValidate != null) {
+            Address address = addressRepository.findById(id).orElse(null);
+
+            if(address != null) {
+                userValidate.setAddress(null);
+
+                addressRepository.delete(address);
+            }
         }
     }
 }
