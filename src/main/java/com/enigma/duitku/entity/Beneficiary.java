@@ -1,6 +1,7 @@
 package com.enigma.duitku.entity;
 
 import lombok.*;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.util.Objects;
@@ -15,8 +16,10 @@ import java.util.Objects;
 public class Beneficiary {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer beneficiaryId;
+    @GenericGenerator(strategy = "uuid2", name= "system-uuid")
+    @GeneratedValue(generator = "system-uuid")
+    @Column(name = "beneficiary_id")
+    private String beneficiaryId;
 
     @Column(name= "mobile_number", length = 12, nullable = false)
     private String mobileNumber;

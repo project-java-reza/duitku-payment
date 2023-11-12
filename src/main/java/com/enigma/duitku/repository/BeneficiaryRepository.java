@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface BeneficiaryRepository extends JpaRepository<Beneficiary, Integer> {
+public interface BeneficiaryRepository extends JpaRepository<Beneficiary, String> {
 
 }
 
