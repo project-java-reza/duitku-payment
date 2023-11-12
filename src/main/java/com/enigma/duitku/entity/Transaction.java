@@ -1,6 +1,7 @@
 package com.enigma.duitku.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -19,7 +20,8 @@ import java.time.LocalTime;
 public class Transaction {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GenericGenerator(strategy = "uuid2", name= "system-uuid")
+    @GeneratedValue(generator = "system-uuid")
     private String id;
 
     @Column(name = "local_date", nullable = false)
@@ -31,7 +33,7 @@ public class Transaction {
     @Column(nullable = false)
     private Double amount;
 
-    @Column(nullable = false, length = 30)
+    @Column(length = 30)
     private String description;
 
     @Column(nullable = false, length = 50)
@@ -39,5 +41,4 @@ public class Transaction {
 
     @Column(nullable = false, length = 50)
     private String type;
-
 }

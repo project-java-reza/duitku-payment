@@ -3,6 +3,7 @@ package com.enigma.duitku.entity;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 @Getter
@@ -28,5 +29,4 @@ public class Beneficiary {
 
     @Column(name= "bank_name", length = 15, nullable = false)
     private String bankName;
-
 }

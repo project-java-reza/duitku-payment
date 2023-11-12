@@ -4,6 +4,7 @@ import com.enigma.duitku.entity.Beneficiary;
 import com.enigma.duitku.entity.User;
 import com.enigma.duitku.entity.Wallet;
 import com.enigma.duitku.exception.BeneficiaryException;
+import com.enigma.duitku.exception.UserException;
 import com.enigma.duitku.model.request.BeneficiaryRequest;
 import com.enigma.duitku.model.response.BeneficiaryResponse;
 import com.enigma.duitku.repository.BeneficiaryRepository;
@@ -13,17 +14,20 @@ import com.enigma.duitku.security.JwtUtils;
 import com.enigma.duitku.service.BeneficiaryService;
 import com.enigma.duitku.service.UserService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.security.auth.login.LoginException;
 import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class BeneficiaryServiceImpl implements BeneficiaryService {
 
     private final UserService userService;
@@ -42,38 +46,40 @@ public class BeneficiaryServiceImpl implements BeneficiaryService {
         String loggedInUserId = jwtUtils.extractUserId(token);
         User user = userService.getById(loggedInUserId);
 
-        if(user != null) {
+        if (user != null) {
 
             // TODO 2: Retrieve wallet and beneficiaries
             Wallet wallet = user.getWallet();
             List<Beneficiary> beneficiaryList = wallet.getListOfBeneficiaries();
 
-            Beneficiary databasebeneficiary = null;
+            Beneficiary databaseBeneficiary = null;
 
-            // TODO 3: Check for existing beneficiary
-            for (Beneficiary b : beneficiaryList) {
+            // TODO 3: Check for existing beneficiary using iterator
+            Iterator<Beneficiary> iterator = beneficiaryList.iterator();
+            while (iterator.hasNext()) {
+                Beneficiary b = iterator.next();
                 if (Objects.equals(b.getMobileNumber(), request.getMobileNumber())) {
-                    databasebeneficiary = b;
+                    databaseBeneficiary = b;
                     break;
                 }
             }
 
             // TODO 4: Add beneficiary if not exist
-            if (databasebeneficiary == null) {
+            if (databaseBeneficiary == null) {
                 Beneficiary newBeneficiary = new Beneficiary();
                 newBeneficiary.setMobileNumber(request.getMobileNumber());
                 newBeneficiary.setName(request.getName());
                 newBeneficiary.setBankName(request.getBankName());
                 newBeneficiary.setAccountNo(request.getAccountNo());
 
-                // TODO 5 : Save the newBeneficiary first
+                // TODO 5: Save the newBeneficiary first
                 newBeneficiary = beneficiaryRepository.save(newBeneficiary);
 
-                // TODO 6 : Add the newBeneficiary to the list of beneficiaries
+                // TODO 6: Add the newBeneficiary to the list of beneficiaries
                 beneficiaryList.add(newBeneficiary);
                 wallet.setListOfBeneficiaries(beneficiaryList);
 
-                // TODO 7 : Save the wallet with the updated list of beneficiaries
+                // TODO 7: Save the wallet with the updated list of beneficiaries
                 walletRepository.save(wallet);
             } else {
                 return BeneficiaryResponse.builder()
@@ -88,7 +94,7 @@ public class BeneficiaryServiceImpl implements BeneficiaryService {
                     .name(request.getName())
                     .accountNo(request.getAccountNo())
                     .build();
-        }else {
+        } else {
             return BeneficiaryResponse.builder()
                     .errors("Mobile Number Not Registered!")
                     .build();
@@ -96,73 +102,75 @@ public class BeneficiaryServiceImpl implements BeneficiaryService {
     }
 
     @Override
-    public List<BeneficiaryResponse> viewAllBeneficiaries() {
+    public Page<BeneficiaryResponse> viewAllBeneficiaries(Integer page, Integer size, String token) throws UserException {
 
-        List<Beneficiary> beneficiaries = beneficiaryRepository.findAll();
-        List<BeneficiaryResponse> responses = new ArrayList<>();
-        for(Beneficiary beneficiary : beneficiaries) {
-            BeneficiaryResponse response = BeneficiaryResponse.builder()
-                    .mobileNumber(beneficiary.getMobileNumber())
-                    .accountNo(beneficiary.getAccountNo())
-                    .name(beneficiary.getName())
-                    .bankName(beneficiary.getBankName())
-                    .build();
-            responses.add(response);
+        String loggedInUserId = jwtUtils.extractUserId(token);
+        User user = userService.getById(loggedInUserId);
+        if(user != null) {
+            Pageable pageable = PageRequest.of(page, size);
+            Page<Beneficiary> beneficiaries = beneficiaryRepository.findAll(pageable);
+            List<BeneficiaryResponse> beneficiaryResponses = new ArrayList<>();
+            for(Beneficiary beneficiary: beneficiaries.getContent()) {
+                BeneficiaryResponse beneficiaryResponse = BeneficiaryResponse.builder()
+                        .mobileNumber(beneficiary.getMobileNumber())
+                        .accountNo(beneficiary.getAccountNo())
+                        .name(beneficiary.getName())
+                        .bankName(beneficiary.getBankName())
+                        .build();
+                beneficiaryResponses.add(beneficiaryResponse);
+            }
+
+            return new PageImpl<>(beneficiaryResponses, pageable, beneficiaries.getTotalElements());
+        } else {
+            throw new UserException("Please Login In!");
         }
-        return responses;
+
     }
 
     @Override
     public String deleteByMobileNumber(String beneficiaryMobileNumber, String token) throws BeneficiaryException, LoginException {
 
-        String loggedInUserId = jwtUtils.extractUserId(token);
-        User user = userService.getById(loggedInUserId);
+        try {
+            String loggedInUserId = jwtUtils.extractUserId(token);
+            User user = userService.getById(loggedInUserId);
 
-        if(user != null) {
-            Wallet wallet = user.getWallet();
-            List<Beneficiary> beneficiaryList = wallet.getListOfBeneficiaries();
+            if (user != null) {
+                Wallet wallet = user.getWallet();
+                List<Beneficiary> listofbeneficiaries = wallet.getListOfBeneficiaries();
 
-            if(!beneficiaryList.isEmpty()) {
+                if (!listofbeneficiaries.isEmpty()) {
+                    Beneficiary targetBeneficiary = null;
+                    Iterator<Beneficiary> iterator = listofbeneficiaries.iterator();
 
-                Beneficiary targetBeneficiary= null;
-
-                for (Beneficiary b : beneficiaryList) {
-                    if (Objects.equals(b.getMobileNumber(), beneficiaryMobileNumber)) {
-                        targetBeneficiary= b;
-                    }
-                }
-
-                if(targetBeneficiary != null) {
-                    Beneficiary deleteBeneficiary = null;
-                    Boolean flag = false;
-
-                    for (Beneficiary b : beneficiaryList) {
-                        if(Objects.equals(b.getMobileNumber(), beneficiaryMobileNumber)) {
-                            deleteBeneficiary = b;
-                            flag = true;
+                    while (iterator.hasNext()) {
+                        Beneficiary b = iterator.next();
+                        if (Objects.equals(b.getMobileNumber(), beneficiaryMobileNumber)) {
+                            targetBeneficiary = b;
+                            break;
                         }
                     }
 
-                    if(deleteBeneficiary != null && flag) {
-                        beneficiaryList.remove(deleteBeneficiary);
-                        wallet.setListOfBeneficiaries(beneficiaryList);
+                    if (targetBeneficiary != null) {
+                        listofbeneficiaries.remove(targetBeneficiary);
+                        wallet.setListOfBeneficiaries(listofbeneficiaries);
                         walletRepository.save(wallet);
-                        beneficiaryRepository.delete(deleteBeneficiary);
+                        beneficiaryRepository.delete(targetBeneficiary);
+                        return "Beneficiary has been Successfully Deleted!";
 
-                        return "Beneficiary has been Successfully deleted";
                     } else {
-                        throw new BeneficiaryException("No Registered Beneficiary Found with this Mobile Number : " + beneficiaryMobileNumber);
+                        throw new BeneficiaryException("No Registered Beneficiary Found with this Mobile Number: " + beneficiaryMobileNumber);
                     }
 
-                }else {
-                    throw new BeneficiaryException("No Registered Beneficiary Found with this Mobile Number : " + beneficiaryMobileNumber);
+                } else {
+                    throw new BeneficiaryException("No Registered Beneficiary Found with this Mobile Number: " + beneficiaryMobileNumber);
                 }
 
-            }else {
-                throw new LoginException("Please Log In !");
+            } else {
+                throw new LoginException("Please log in!");
             }
 
+        } catch (Exception e) {
+            throw new BeneficiaryException("Error deleting Beneficiary: " + e.getMessage());
         }
-        return "Beneficiary has been Successfully deleted\"";
     }
 }

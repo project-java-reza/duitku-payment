@@ -32,5 +32,4 @@ public class Wallet {
 
     @ElementCollection
     private List<Bill> listofBills = new ArrayList<>();
-
 }

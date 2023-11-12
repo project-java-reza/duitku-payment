@@ -3,14 +3,19 @@ package com.enigma.duitku.controller;
 import com.enigma.duitku.entity.Transaction;
 import com.enigma.duitku.exception.UserException;
 import com.enigma.duitku.model.request.TransactionRequest;
+import com.enigma.duitku.model.response.BankAccountResponse;
 import com.enigma.duitku.model.response.CommonResponse;
+import com.enigma.duitku.model.response.PagingResponse;
 import com.enigma.duitku.model.response.TransactionResponse;
+import com.enigma.duitku.security.AuthTokenFilter;
 import com.enigma.duitku.service.TransactionService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
 
@@ -21,24 +26,55 @@ public class TransactionController {
 
     private final TransactionService transactionService;
 
-    @GetMapping("/view")
-    public ResponseEntity<?> viewTransaction(@PathVariable String id) {
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(CommonResponse.builder()
-                        .data(transactionService.viewTransactionId(id))
-                        .build());
+    private final AuthTokenFilter authTokenFilter;
+
+    @GetMapping("/view/{id}")
+    public ResponseEntity<?> viewTransaction(@PathVariable String id, HttpServletRequest httpServletRequest) throws UserException{
+        try {
+            String jwtToken = authTokenFilter.parseJwt(httpServletRequest);
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(CommonResponse.builder()
+                            .data(transactionService.viewTransactionId(id, jwtToken))
+                            .build());
+        }catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(CommonResponse.<BankAccountResponse>builder()
+                            .statusCode(HttpStatus.NOT_FOUND.value())
+                            .message("View by id failed" + e.getMessage())
+                            .build());
+        }
+
     }
 
     @GetMapping("/viewall")
-    public ResponseEntity<?> viewAllTransaction() {
+    public ResponseEntity<?> viewAllTransaction(
+            @RequestParam(name= "page", required = false, defaultValue = "0")Integer page,
+            @RequestParam(name= "size", required = false, defaultValue = "5")Integer size,
+            HttpServletRequest httpServletRequest
+    ) throws UserException {
+        try {
+            String jwtToken = authTokenFilter.parseJwt(httpServletRequest);
+            Page<TransactionResponse> transactionResponses = transactionService.viewAllTransaction(page, size, jwtToken);
+            PagingResponse pagingResponse = PagingResponse.builder()
+                    .currentPage(page)
+                    .totalPage(transactionResponses.getTotalPages())
+                    .size(size)
+                    .build();
 
-        List<TransactionResponse> transactions = transactionService.viewAllTransaction();
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(CommonResponse.builder()
+                            .statusCode(HttpStatus.OK.value())
+                            .message("Successfully get all transaction")
+                            .data(transactionResponses.getContent())
+                            .paging(pagingResponse)
+                            .build());
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(CommonResponse.<BankAccountResponse>builder()
+                            .statusCode(HttpStatus.NOT_FOUND.value())
+                            .message("View all failed" + e.getMessage())
+                            .build());
+        }
 
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(CommonResponse.builder()
-                        .statusCode(HttpStatus.OK.value())
-                        .message("Successfully get all transaction")
-                        .data(transactions)
-                        .build());
     }
 }

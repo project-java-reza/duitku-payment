@@ -11,8 +11,9 @@ import lombok.*;
 public class TransactionResponse {
 
     private String receiver;
-    private  String description;
+    private String description;
     private String transactionType;
     private Double amount;
+    private String errors;
 
 }

@@ -13,7 +13,6 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Embeddable
-@Builder(toBuilder = true)
 public class Bill {
 
     @Column(name = "consumer_no")
@@ -25,10 +24,13 @@ public class Bill {
     @Column(nullable = false)
     private Double amount;
 
+    @Column(length = 30)
+    private String description;
+
     @Column(length = 20, nullable = false)
     private String receiver;
 
-    @Column(name = "payment_date_time", nullable = false)
+    @Column(name = "payment_date_time")
     private LocalDateTime paymentDateTime;
 
 }

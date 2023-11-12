@@ -1,5 +1,6 @@
 package com.enigma.duitku.service.impl;
 
+import com.enigma.duitku.entity.Bill;
 import com.enigma.duitku.entity.Transaction;
 import com.enigma.duitku.entity.User;
 import com.enigma.duitku.entity.Wallet;
@@ -9,15 +10,24 @@ import com.enigma.duitku.model.response.TransactionResponse;
 import com.enigma.duitku.repository.TransactionRepository;
 import com.enigma.duitku.repository.UserRepository;
 import com.enigma.duitku.repository.WalletRepository;
+import com.enigma.duitku.security.JwtUtils;
 import com.enigma.duitku.service.TransactionService;
 import com.enigma.duitku.service.UserService;
 import com.enigma.duitku.service.WalletService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.TransactionException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -34,25 +44,31 @@ public class TransactionServiceImpl implements TransactionService {
 
     private final UserRepository userRepository;
 
+    private final JwtUtils jwtUtils;
+
     @Override
     @Transactional(rollbackOn = Exception.class)
-    public TransactionResponse addTransaction(String receiver, String description, String transationType, Double amount, String mobileNumber) {
+    public TransactionResponse addTransaction(TransactionRequest request, String token) throws UserException{
 
-        Optional<User> optionalUser = userRepository.findById(mobileNumber);
+        String loggedInUserId = jwtUtils.extractUserId(token);
 
-        if(optionalUser.isPresent()) {
+        log.info("Adding transaction for user with ID: {}", loggedInUserId);
 
-            User user = optionalUser.get();
+        User user = userService.getById(loggedInUserId);
+
+        if(user != null) {
 
             Wallet wallet = user.getWallet();
 
             Transaction transaction = new Transaction();
 
-            transaction.setAmount(amount);
+            transaction.setAmount(request.getAmount());
             transaction.setLocalDate(LocalDateTime.now());
-            transaction.setDescription(description);
-            transaction.setReceiver(receiver);
-            transaction.setType(transationType);
+            transaction.setDescription(request.getDescription());
+            transaction.setReceiver(request.getReceiver());
+            transaction.setType(request.getTransactionType());
+
+            log.info("DESCRIPTION" + request.getDescription());
 
             transaction.setWalletId(wallet.getId());
 
@@ -62,34 +78,54 @@ public class TransactionServiceImpl implements TransactionService {
 
             wallet.setListOfTransactions(listoftransactions);
 
-            walletRepository.saveAndFlush(wallet);
             transactionRepository.saveAndFlush(transaction);
+            walletRepository.saveAndFlush(wallet);
 
             return TransactionResponse.builder()
-                    .amount(transaction.getAmount())
-                    .description(transaction.getDescription())
-                    .transactionType(transaction.getType())
+                    .amount(request.getAmount())
+                    .description(request.getDescription())
+                    .transactionType(request.getTransactionType())
                     .build();
         } else {
-            return TransactionResponse.builder().build();
+            throw new UserException("Plese Login In ");
         }
     }
 
-    private User getUserFromRequest(TransactionRequest request) {
-        User user = userService.getById(request.getUserId());
-        if (user == null) {
-            throw new RuntimeException("User not found for ID: " + request.getUserId());
+    @Override
+    public Transaction viewTransactionId(String id, String token)throws UserException {
+        String loggedInUserId = jwtUtils.extractUserId(token);
+        User user = userService.getById(loggedInUserId);
+
+        if(user != null) {
+            Optional<Transaction> optionalTransaction = transactionRepository.findById(id);
+
+            if(optionalTransaction.isPresent()) {
+                return  optionalTransaction.get();
+            } else {
+                throw new TransactionException("No Transaction Found With This Transaction Id: " + id);
+            }
+        } else {
+            throw new UserException("Plese Login In ");
         }
-        return user;
     }
 
     @Override
-    public Transaction viewTransactionId(String transationId) {
-        return null;
-    }
+    public Page<TransactionResponse> viewAllTransaction(Integer page, Integer size, String token) throws UserException{
 
-    @Override
-    public List<TransactionResponse> viewAllTransaction() {
-        return null;
+        String loggedInUserId = jwtUtils.extractUserId(token);
+        User user = userService.getById(loggedInUserId);
+
+        if(user != null) {
+            Pageable pageable = PageRequest.of(page, size);
+            Page<Transaction> transactions = transactionRepository.findAll(pageable);
+            List<TransactionResponse> transactionResponses = new ArrayList<>();
+            for (Transaction transaction : transactions.getContent()) {
+                TransactionResponse transactionResponse = new TransactionResponse(transaction.getId(), transaction.getDescription(), transaction.getType(), transaction.getAmount(), transaction.getWalletId());
+                transactionResponses.add(transactionResponse);
+            }
+            return new PageImpl<>(transactionResponses, pageable, transactions.getTotalElements());
+        } else {
+            throw new UserException("Plese Login In ");
+        }
     }
 }
