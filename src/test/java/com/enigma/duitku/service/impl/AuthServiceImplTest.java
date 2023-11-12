@@ -106,7 +106,7 @@ class AuthServiceImplTest {
     }
 
     @Test
-    void testRegisterUsersConflictException() throws UserException {
+    void testRegisterUsersConflict() throws UserException {
         AuthRequest authRequest = new AuthRequest();
         authRequest.setEmail("dim4211@gmail.com");
         authRequest.setPassword("apakahkamutau");
@@ -130,9 +130,9 @@ class AuthServiceImplTest {
         assertEquals(HttpStatus.CONFLICT, exception.getStatus());
         assertEquals("user already exists", exception.getReason());
 
-        verify(roleService).getOrSave(ERole.ROLE_USER);
-        verify(bCryptUtils).hashPassword(any());
-        verify(userCredentialRepository).saveAndFlush(any(UserCredential.class));
+        verify(roleService,times(1)).getOrSave(ERole.ROLE_USER);
+        verify(bCryptUtils,times(1)).hashPassword(any());
+        verify(userCredentialRepository,times(1)).saveAndFlush(any(UserCredential.class));
         verify(userService, never()).create(any(User.class));
     }
 
