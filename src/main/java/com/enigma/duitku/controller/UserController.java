@@ -83,5 +83,4 @@ public class UserController {
                         .data(String.valueOf(user))
                         .build());
     }
-
 }

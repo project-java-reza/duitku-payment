@@ -1,5 +1,6 @@
 package com.enigma.duitku.model.response;
 
+import com.enigma.duitku.entity.Address;
 import lombok.*;
 
 @Getter
@@ -10,6 +11,5 @@ import lombok.*;
 public class UserResponse {
     private String email;
     private String mobileNumber;
-    private String address;
     private String name;
 }

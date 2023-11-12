@@ -23,13 +23,13 @@ public class User {
     @Column(length = 100, nullable = false, unique = true)
     private String email;
 
-    @Column(length = 100, nullable = false)
-    private String address;
-
     @OneToOne
     @JoinColumn(name = "user_credential_id")
     private UserCredential userCredential;
 
     @OneToOne(cascade = CascadeType.ALL)
     private Wallet wallet;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    private Address address;
 }

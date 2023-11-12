@@ -68,7 +68,4 @@ public class BillPaymentController {
             return ResponseEntity.status(500).body("Internal Server Error");
         }
     }
-
-
-
 }

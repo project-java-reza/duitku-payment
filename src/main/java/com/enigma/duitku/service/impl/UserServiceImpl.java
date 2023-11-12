@@ -78,7 +78,7 @@ public class UserServiceImpl implements UserService {
         Page<User> users = userRepository.findAll(pageable);
         List<UserResponse> userResponses = new ArrayList<>();
         for (User user : users.getContent()) {
-            UserResponse userResponse = new UserResponse(user.getMobileNumber(), user.getName(), user.getEmail(), user.getAddress());
+            UserResponse userResponse = new UserResponse(user.getMobileNumber(), user.getName(), user.getEmail());
             userResponses.add(userResponse);
         }
         return new PageImpl<>(userResponses, pageable, users.getTotalElements());

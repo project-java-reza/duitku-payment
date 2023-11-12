@@ -78,7 +78,6 @@ class AuthServiceImplTest {
 
         User user = User.builder()
                 .name(authRequest.getName())
-                .address(authRequest.getAddress())
                 .mobileNumber(authRequest.getMobileNumber())
                 .email(authRequest.getEmail())
                 .userCredential(credential)
