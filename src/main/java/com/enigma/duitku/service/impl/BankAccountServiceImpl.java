@@ -62,10 +62,6 @@ public class BankAccountServiceImpl implements BankAccountService {
 
         if(user != null) {
 
-            if (user.getWallet() != null) {
-                throw new ConflictException("Wallet already registered");
-            }
-
             BankAccount bankAccount = new BankAccount();
             bankAccount.setId(request.getMobileNumber());
             bankAccount.setAccountNo(request.getAccountNo());
