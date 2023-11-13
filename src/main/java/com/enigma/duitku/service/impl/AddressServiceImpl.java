@@ -36,25 +36,37 @@ public class AddressServiceImpl implements AddressService {
 
     @Override
     public AddressResponse addAddress(AddressRequest addressRequest, String token) throws UserException {
+
+        // TODO 1 : Extract the user ID from the JWT token using jwtUtils.
         String loggedInUserId = jwtUtils.extractUserId(token);
+
+        // TODO 2 : Retrieve the user object from the userService based on the extracted user ID.
         User user = userService.getById(loggedInUserId);
 
+        // TODO 3 : Check if the user object is not null.
         if(user != null) {
-
+            // TODO 4 : Check if the user already has an address. If yes, throw a ConflictException.
             if (user.getAddress() != null) {
                 throw new ConflictException("User already has an address");
             }
 
+            // TODO 5 : Create a new Address object and set its properties based on the provided addressRequest.
             Address address = new Address();
             address.setState(addressRequest.getState());
             address.setCity(addressRequest.getCity());
             address.setStreetName(addressRequest.getStreetName());
             address.setPostalCode(addressRequest.getPostalCode());
+
+            // TODO 6 : Set the user's address to the newly created address.
             user.setAddress(address);
 
+            // TODO 7: Save the new address to the addressRepository.
             addressRepository.save(address);
+
+            // TODO 8 : Save the updated user object to the userRepository.
             userRepository.save(user);
 
+            // TODO 9 : Build and return an AddressResponse based on the user's address.
             return AddressResponse.builder()
                     .state(user.getAddress().getState())
                     .city(user.getAddress().getCity())
@@ -62,6 +74,8 @@ public class AddressServiceImpl implements AddressService {
                     .postalCode(user.getAddress().getPostalCode())
                     .build();
         } else {
+
+            // TODO 10 : If the user object is null, throw a UserException indicating the need to log in.
             throw new UserException("Please Login in!");
         }
     }

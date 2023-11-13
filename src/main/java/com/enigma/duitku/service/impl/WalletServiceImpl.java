@@ -1,10 +1,7 @@
 package com.enigma.duitku.service.impl;
 
 import com.enigma.duitku.entity.*;
-import com.enigma.duitku.exception.BankAccountException;
-import com.enigma.duitku.exception.BeneficiaryException;
-import com.enigma.duitku.exception.UserException;
-import com.enigma.duitku.exception.WalletException;
+import com.enigma.duitku.exception.*;
 import com.enigma.duitku.model.request.TransactionRequest;
 import com.enigma.duitku.model.request.WalletRequest;
 import com.enigma.duitku.model.response.TransactionResponse;
@@ -52,7 +49,6 @@ public class WalletServiceImpl implements WalletService {
     @Transactional(rollbackOn = Exception.class)
     public TransactionResponse transferMoneytoBeneficiary(TransactionRequest request, String token) throws BankAccountException, WalletException, BeneficiaryException, UserException{
 
-
         String loggedInUserId = jwtUtils.extractUserId(token);
         User validateUser = userService.getById(loggedInUserId);
 
@@ -60,6 +56,7 @@ public class WalletServiceImpl implements WalletService {
             Wallet wallet = validateUser.getWallet();
 
             List<Beneficiary> listofbeneficiaries = wallet.getListOfBeneficiaries();
+
             Iterator<Beneficiary> iterator = listofbeneficiaries.iterator();
             Beneficiary targetBeneficiary = null;
 
@@ -116,22 +113,29 @@ public class WalletServiceImpl implements WalletService {
     }
 
     @Override
-    public TransactionResponse transferMoneytoUser(TransactionRequest request, String token) throws UserException {
+    @Transactional(rollbackOn = Exception.class)
+    public TransactionResponse transferMoneytoUser(TransactionRequest request, String token) throws UserException, TargetUserNotFoundException, UserNotFoundException {
+
         String loggedInUserId = jwtUtils.extractUserId(token);
         User validateUser = userService.getById(loggedInUserId);
 
         if(validateUser != null) {
+
             Optional<User> optionalUser = userRepository.findById(validateUser.getMobileNumber());
+            log.info("ID Login " + validateUser.getWallet().getId());
 
             if(optionalUser.isPresent()) {
                 Optional<User> optionalTargetUser = userRepository.findById(request.getTargetMobileNumber());
+                log.info("Mobile Number " + request.getTargetMobileNumber());
 
                 if(optionalTargetUser.isPresent()) {
 
                     User user = optionalUser.get();
                     User targetUser = optionalTargetUser.get();
+
                     Wallet wallet = user.getWallet();
-                    Wallet targetWallet = user.getWallet();
+                    Wallet targetWallet = targetUser.getWallet();
+
                     Double availableBalance = wallet.getBalance();
                     Double targetAvailableBalance = wallet.getBalance();
                     List<Transaction> targetListOfTransactions = targetWallet.getListOfTransactions();
@@ -140,18 +144,15 @@ public class WalletServiceImpl implements WalletService {
 
                         TransactionRequest transactionRequest = new TransactionRequest();
                         transactionRequest.setTransactionType(request.getTransactionType());
-                        transactionRequest.setTargetMobileNumber(request.getTargetMobileNumber());
                         transactionRequest.setDescription(request.getDescription());
                         transactionRequest.setAmount(request.getAmount());
                         transactionRequest.setReceiver(request.getReceiver());
                         transactionService.addTransaction(transactionRequest, token);
 
                         if(transactionRequest != null) {
-                            Transaction transaction = new Transaction();
-                            wallet.setBalance(availableBalance - request.getAmount());
-                            targetListOfTransactions.add(transaction);
+
                             targetWallet.setBalance(targetAvailableBalance + request.getAmount());
-                            targetWallet.setListOfTransactions(targetListOfTransactions);
+                            wallet.setBalance(availableBalance - request.getAmount());
 
                             walletRepository.saveAndFlush(wallet);
                             walletRepository.saveAndFlush(targetWallet);
@@ -164,11 +165,19 @@ public class WalletServiceImpl implements WalletService {
                                     .build();
                         }
 
+                    } else {
+                        throw new TransferException("Insufficient Funds ! Available Wallet Balance : " + availableBalance);
                     }
 
+                } else {
+                    throw new TargetUserNotFoundException("Target user not found with mobile number: " + request.getTargetMobileNumber());
                 }
 
+            } else {
+               throw new UserNotFoundException("User Not Found with mobile number " + validateUser.getMobileNumber());
             }
+        } else {
+            throw new UserException("Please Login in");
         }
 
         return null;
