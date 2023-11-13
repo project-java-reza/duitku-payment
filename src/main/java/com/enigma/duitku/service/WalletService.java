@@ -16,5 +16,8 @@ import java.util.List;
 public interface WalletService {
 
         TransactionResponse transferMoneytoBeneficiary(TransactionRequest transaction, String token) throws BankAccountException, WalletException, BeneficiaryException, UserException;
+
+        TransactionResponse transferMoneytoUser(TransactionRequest request, String token) throws UserException;
+
         Wallet getById(String id, String token) throws UserException;
 }

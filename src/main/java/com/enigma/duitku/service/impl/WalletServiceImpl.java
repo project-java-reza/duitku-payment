@@ -115,6 +115,64 @@ public class WalletServiceImpl implements WalletService {
         }
     }
 
+    @Override
+    public TransactionResponse transferMoneytoUser(TransactionRequest request, String token) throws UserException {
+        String loggedInUserId = jwtUtils.extractUserId(token);
+        User validateUser = userService.getById(loggedInUserId);
+
+        if(validateUser != null) {
+            Optional<User> optionalUser = userRepository.findById(validateUser.getMobileNumber());
+
+            if(optionalUser.isPresent()) {
+                Optional<User> optionalTargetUser = userRepository.findById(request.getTargetMobileNumber());
+
+                if(optionalTargetUser.isPresent()) {
+
+                    User user = optionalUser.get();
+                    User targetUser = optionalTargetUser.get();
+                    Wallet wallet = user.getWallet();
+                    Wallet targetWallet = user.getWallet();
+                    Double availableBalance = wallet.getBalance();
+                    Double targetAvailableBalance = wallet.getBalance();
+                    List<Transaction> targetListOfTransactions = targetWallet.getListOfTransactions();
+
+                    if(availableBalance >= request.getAmount()) {
+
+                        TransactionRequest transactionRequest = new TransactionRequest();
+                        transactionRequest.setTransactionType(request.getTransactionType());
+                        transactionRequest.setTargetMobileNumber(request.getTargetMobileNumber());
+                        transactionRequest.setDescription(request.getDescription());
+                        transactionRequest.setAmount(request.getAmount());
+                        transactionRequest.setReceiver(request.getReceiver());
+                        transactionService.addTransaction(transactionRequest, token);
+
+                        if(transactionRequest != null) {
+                            Transaction transaction = new Transaction();
+                            wallet.setBalance(availableBalance - request.getAmount());
+                            targetListOfTransactions.add(transaction);
+                            targetWallet.setBalance(targetAvailableBalance + request.getAmount());
+                            targetWallet.setListOfTransactions(targetListOfTransactions);
+
+                            walletRepository.saveAndFlush(wallet);
+                            walletRepository.saveAndFlush(targetWallet);
+
+                            return TransactionResponse.builder()
+                                    .amount(transactionRequest.getAmount())
+                                    .receiver(transactionRequest.getReceiver())
+                                    .description(transactionRequest.getDescription())
+                                    .transactionType(transactionRequest.getTransactionType())
+                                    .build();
+                        }
+
+                    }
+
+                }
+
+            }
+        }
+
+        return null;
+    }
 
     @Override
     public Wallet getById(String id, String token) throws UserException {

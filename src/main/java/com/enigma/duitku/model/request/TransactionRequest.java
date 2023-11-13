@@ -20,4 +20,5 @@ public class TransactionRequest  {
     private String userId;
     private String beneficiaryMobileNumber;
     private String billType;
+    private String targetMobileNumber;
 }

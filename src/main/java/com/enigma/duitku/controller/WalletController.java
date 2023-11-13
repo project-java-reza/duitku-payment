@@ -61,6 +61,36 @@ public class WalletController {
 
     }
 
+    @PostMapping("/transfertouser")
+    public ResponseEntity<?>transferMoneyBetweenApplicationUsers(@RequestBody TransactionRequest request, HttpServletRequest httpServletRequest) throws UserException{
+
+        try {
+            String jwtToken = authTokenFilter.parseJwt(httpServletRequest);
+
+            if(jwtToken == null) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                        .body(CommonResponse.builder()
+                                .statusCode(HttpStatus.UNAUTHORIZED.value())
+                                .build());
+            }
+
+            TransactionResponse  transactionResponse = walletService.transferMoneytoUser(request, jwtToken);
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(CommonResponse.builder()
+                            .statusCode(HttpStatus.OK.value())
+                            .message("Successfully transfer money")
+                            .data(transactionResponse)
+                            .build());
+
+        } catch (RuntimeException e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(CommonResponse.<BankAccountResponse>builder()
+                            .statusCode(HttpStatus.NOT_FOUND.value())
+                            .message("Failed transfer to user" + e.getMessage())
+                            .build());
+        }
+    }
+
     @GetMapping()
     public ResponseEntity<?> getWalletById(@RequestParam String id, HttpServletRequest httpServletRequest) throws UserException {
         try {
