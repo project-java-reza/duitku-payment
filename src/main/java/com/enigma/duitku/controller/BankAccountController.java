@@ -29,31 +29,20 @@ public class BankAccountController {
     private final AuthTokenFilter authTokenFilter;
 
     @PostMapping("/add")
-    public ResponseEntity<?> addBankAccount(@RequestBody BankAccountRequest request, HttpServletRequest httpServletRequest)  {
+    public ResponseEntity<?> addBankAccount(@RequestBody BankAccountRequest request, HttpServletRequest httpServletRequest) throws UserException {
         try {
             String jwtToken = authTokenFilter.parseJwt(httpServletRequest);
             BankAccountResponse bankAccountResponse = bankAccountService.addAccount(request, jwtToken);
-
-            if(bankAccountResponse.getErrors() != null || request.getMobileNumber().isEmpty()) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                        .body(CommonResponse.builder()
-                                .statusCode(HttpStatus.BAD_REQUEST.value())
-                                .data(bankAccountResponse)
-                                .message("Failed created bank account")
-                                .build());
-
-            } else {
                 return ResponseEntity.status(HttpStatus.CREATED)
                         .body(CommonResponse.builder()
                                 .statusCode(HttpStatus.CREATED.value())
                                 .data(bankAccountResponse)
                                 .message("Successfully created bank account")
                                 .build());
-            }
         } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+            return ResponseEntity.status(HttpStatus.CONFLICT)
                     .body(CommonResponse.<BankAccountResponse>builder()
-                            .statusCode(HttpStatus.NOT_FOUND.value())
+                            .statusCode(HttpStatus.CONFLICT.value())
                             .message("Failed add account " + e.getMessage())
                             .build());
         }
@@ -82,10 +71,10 @@ public class BankAccountController {
    }
 
     @DeleteMapping("/delete")
-    public ResponseEntity<?> deleteBankAccount(@RequestBody User user, HttpServletRequest httpServletRequest) throws UserException{
+    public ResponseEntity<?> deleteBankAccount(@RequestParam String id, HttpServletRequest httpServletRequest) throws UserException{
         try {
             String jwtToken = authTokenFilter.parseJwt(httpServletRequest);
-            bankAccountService.removeAccountBank(user, jwtToken);
+            bankAccountService.removeAccountBank(id, jwtToken);
 
             BankAccount bankAccount = new BankAccount();
             return ResponseEntity.status(HttpStatus.OK)

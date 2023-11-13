@@ -4,6 +4,7 @@ import com.enigma.duitku.entity.BankAccount;
 import com.enigma.duitku.entity.Transaction;
 import com.enigma.duitku.entity.User;
 import com.enigma.duitku.entity.Wallet;
+import com.enigma.duitku.exception.ConflictException;
 import com.enigma.duitku.exception.UserException;
 import com.enigma.duitku.model.request.BankAccountRequest;
 import com.enigma.duitku.model.request.TransactionRequest;
@@ -54,15 +55,19 @@ public class BankAccountServiceImpl implements BankAccountService {
     private final UserService userService;
 
     @Override
-    public BankAccountResponse addAccount(BankAccountRequest request, String token) {
+    public BankAccountResponse addAccount(BankAccountRequest request, String token) throws UserException {
 
         String loggedInUserId = jwtUtils.extractUserId(token);
         User user = userService.getById(loggedInUserId);
 
         if(user != null) {
 
+            if (user.getWallet() != null) {
+                throw new ConflictException("Wallet already registered");
+            }
+
             BankAccount bankAccount = new BankAccount();
-            bankAccount.setId(user.getMobileNumber());
+            bankAccount.setId(request.getMobileNumber());
             bankAccount.setAccountNo(request.getAccountNo());
             bankAccount.setBalance(request.getBalance());
             bankAccount.setBankName(request.getBankName());
@@ -76,9 +81,7 @@ public class BankAccountServiceImpl implements BankAccountService {
                     .balance(request.getBalance())
                     .build();
         } else {
-            return BankAccountResponse.builder()
-                    .errors("Invalid mobile number, Please Enter Your Registered  Mobile Number!")
-                    .build();
+            throw new UserException("Please Login in !");
         }
     }
 
@@ -96,13 +99,13 @@ public class BankAccountServiceImpl implements BankAccountService {
     }
 
     @Override
-    public BankAccountResponse removeAccountBank(User user, String token) throws UserException {
+    public BankAccountResponse removeAccountBank(String id, String token) throws UserException {
 
         String loggedInUserId = jwtUtils.extractUserId(token);
         User userValidate = userService.getById(loggedInUserId);
 
         if(userValidate != null) {
-            BankAccount bankAccount = bankAccountRepository.getById(user.getMobileNumber());
+            BankAccount bankAccount = bankAccountRepository.findById(id).orElse(null);
 
             if(bankAccount!=null) {
                 bankAccountRepository.delete(bankAccount);
@@ -187,7 +190,7 @@ public class BankAccountServiceImpl implements BankAccountService {
                         .balance(bankAccount.getBalance())
                         .accountNo(bankAccount.getAccountNo())
                         .bankName(bankAccount.getBankName())
-                        .mobileNumber(bankAccount.getBankName())
+                        .mobileNumber(bankAccount.getId())
                         .build();
                 bankAccountResponses.add(bankAccountResponse);
             }

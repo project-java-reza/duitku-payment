@@ -12,9 +12,9 @@ import java.util.List;
 
 public interface BankAccountService {
 
-    BankAccountResponse addAccount(BankAccountRequest request, String token);
+    BankAccountResponse addAccount(BankAccountRequest request, String token) throws UserException;
     BankAccount getById(String id, String token) throws UserException;
-    BankAccountResponse removeAccountBank(User user, String token) throws UserException;
+    BankAccountResponse removeAccountBank(String id , String token) throws UserException;
     BankAccountResponse topUpWallet(BankAccountRequest request, String token) throws UserException, TransactionException;
     Page<BankAccountResponse> getAllBankAccount(Integer page, Integer size, String token) throws UserException;
 }
