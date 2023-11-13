@@ -1,16 +1,10 @@
 package com.enigma.duitku.controller;
 
-import com.enigma.duitku.entity.Wallet;
-import com.enigma.duitku.exception.BankAccountException;
-import com.enigma.duitku.exception.BeneficiaryException;
-import com.enigma.duitku.exception.UserException;
-import com.enigma.duitku.exception.WalletException;
+import com.enigma.duitku.exception.*;
 import com.enigma.duitku.model.request.TransactionRequest;
-import com.enigma.duitku.model.request.WalletRequest;
 import com.enigma.duitku.model.response.BankAccountResponse;
 import com.enigma.duitku.model.response.CommonResponse;
 import com.enigma.duitku.model.response.TransactionResponse;
-import com.enigma.duitku.model.response.WalletResponse;
 import com.enigma.duitku.security.AuthTokenFilter;
 import com.enigma.duitku.service.WalletService;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -43,7 +36,7 @@ public class WalletController {
                                 .build());
             }
 
-            TransactionResponse transactionResponse = walletService.transferMoneytoBeneficiary(request, jwtToken);
+            TransactionResponse transactionResponse = walletService.transferMoneyToBeneficiary(request, jwtToken);
 
             return ResponseEntity.status(HttpStatus.OK)
                     .body(CommonResponse.builder()
@@ -62,7 +55,7 @@ public class WalletController {
     }
 
     @PostMapping("/transfertouser")
-    public ResponseEntity<?>transferMoneyBetweenApplicationUsers(@RequestBody TransactionRequest request, HttpServletRequest httpServletRequest) throws UserException{
+    public ResponseEntity<?>transferMoneyBetweenApplicationUsers(@RequestBody TransactionRequest request, HttpServletRequest httpServletRequest) throws UserException, TargetUserNotFoundException, UserNotFoundException, TransferException {
 
         try {
             String jwtToken = authTokenFilter.parseJwt(httpServletRequest);
@@ -74,7 +67,7 @@ public class WalletController {
                                 .build());
             }
 
-            TransactionResponse  transactionResponse = walletService.transferMoneytoUser(request, jwtToken);
+            TransactionResponse  transactionResponse = walletService.transferMoneyToUser(request, jwtToken);
             return ResponseEntity.status(HttpStatus.OK)
                     .body(CommonResponse.builder()
                             .statusCode(HttpStatus.OK.value())
