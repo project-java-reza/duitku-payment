@@ -73,12 +73,21 @@ public class WalletController {
             }
 
             TransactionResponse transactionResponse = walletService.transferMoneytoUser(request, jwtToken);
-            return ResponseEntity.status(HttpStatus.OK)
-                    .body(CommonResponse.builder()
-                            .statusCode(HttpStatus.OK.value())
-                            .message("Successfully transfer money")
-                            .data(transactionResponse)
-                            .build());
+            if(transactionResponse.getErrors() != null) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body(CommonResponse.builder()
+                                .statusCode(HttpStatus.BAD_REQUEST.value())
+                                .message("Failed to transfer")
+                                .data(transactionResponse)
+                                .build());
+            } else {
+                return ResponseEntity.status(HttpStatus.OK)
+                        .body(CommonResponse.builder()
+                                .statusCode(HttpStatus.OK.value())
+                                .message("Successfully transfer money")
+                                .data(transactionResponse)
+                                .build());
+            }
 
         } catch (RuntimeException | UserNotFoundException e) {
             HttpStatus httpStatus = (e instanceof UserNotFoundException) ? HttpStatus.NOT_FOUND : HttpStatus.INTERNAL_SERVER_ERROR;

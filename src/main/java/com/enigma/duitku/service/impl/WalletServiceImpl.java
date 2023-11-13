@@ -151,6 +151,12 @@ public class WalletServiceImpl implements WalletService {
 
                         if(transactionRequest != null) {
 
+                            if (request.getAmount() < 10000) {
+                                return TransactionResponse.builder()
+                                        .errors("Minimum balance requirement not met. Minimum amount: 10,000")
+                                        .build();
+                            }
+
                             targetWallet.setBalance(targetAvailableBalance + request.getAmount());
                             wallet.setBalance(availableBalance - request.getAmount());
 
