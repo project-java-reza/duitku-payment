@@ -4,6 +4,7 @@ import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import javax.validation.constraints.Size;
 
 @Entity
 @Table(name = "m_admin")
@@ -22,6 +23,7 @@ public class Admin {
     private String name;
 
     @Column(unique = true)
+    @Size(min = 10, message = "Mobile number must be at least 10 characters long")
     private String mobileNumber;
 
     @OneToOne

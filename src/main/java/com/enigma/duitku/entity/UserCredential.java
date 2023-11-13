@@ -6,6 +6,7 @@ import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 import java.util.List;
 
 @Entity
@@ -23,6 +24,7 @@ public class UserCredential {
     private String id;
 
     @Column(unique = true, length = 255)
+    @Size(min = 10, message = "Mobile number must be at least 10 characters long")
     private String mobileNumber;
 
     private String password;
