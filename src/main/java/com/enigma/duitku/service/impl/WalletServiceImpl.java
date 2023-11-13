@@ -48,15 +48,15 @@ public class WalletServiceImpl implements WalletService {
     public TransactionResponse transferMoneyToBeneficiary(TransactionRequest request, String token)
             throws BankAccountException, WalletException, BeneficiaryException, UserException{
 
-
         String loggedInUserId = jwtUtils.extractUserId(token);
         User validateUser = userService.getById(loggedInUserId);
 
         if (validateUser != null) {
             Wallet wallet = validateUser.getWallet();
 
-            List<Beneficiary> listOfBeneficiaries = wallet.getListOfBeneficiaries();
-            Iterator<Beneficiary> iterator = listOfBeneficiaries.iterator();
+            List<Beneficiary> listofbeneficiaries = wallet.getListOfBeneficiaries();
+            Iterator<Beneficiary> iterator = listofbeneficiaries.iterator();
+
             Beneficiary targetBeneficiary = null;
 
             while (iterator.hasNext()) {
@@ -112,38 +112,39 @@ public class WalletServiceImpl implements WalletService {
     }
 
     @Override
-    @Transactional(rollbackOn = Exception.class)
-    public TransactionResponse transferMoneyToUser(TransactionRequest request, String token) throws UserException, TargetUserNotFoundException, UserNotFoundException, TransferException {
+    public TransactionResponse transferMoneyToUser(TransactionRequest request, String token)
+            throws UserException, TargetUserNotFoundException, UserNotFoundException, TransferException {
 
-        String loggedInUserId = jwtUtils.extractUserId(token);
-        User validateUser = userService.getById(loggedInUserId);
+            String loggedInUserId = jwtUtils.extractUserId(token);
+            User validateUser = userService.getById(loggedInUserId);
 
-        if (validateUser != null) {
-            Optional<User> optionalUser = userRepository.findById(validateUser.getMobileNumber());
-            log.info("ID Login " + validateUser.getWallet().getId());
+            if (validateUser != null) {
+                Optional<User> optionalUser = userRepository.findById(validateUser.getMobileNumber());
+                log.info("ID Login " + validateUser.getWallet().getId());
 
-            if (optionalUser != null) {
-                Optional<User> targetUser = userRepository.findById(request.getTargetMobileNumber());
-                log.info("Mobile Number " + request.getTargetMobileNumber());
+                if (optionalUser != null) {
+                    Optional<User> targetUser = userRepository.findById(request.getTargetMobileNumber());
+                    log.info("Mobile Number " + request.getTargetMobileNumber());
 
-                if (targetUser != null) {
-                    Optional<User> user = optionalUser;
-                    Wallet wallet = user.get().getWallet();
-                    Wallet targetWallet = targetUser.get().getWallet();
+                    Double availableBalance = null;
+                    Double targetAvailableBalance;
+                    if (targetUser != null) {
+                        Optional<User> user = optionalUser;
+                        Wallet wallet = user.get().getWallet();
+                        Wallet targetWallet = targetUser.get().getWallet();
 
-                    Double availableBalance = wallet.getBalance();
-                    Double targetAvailableBalance = targetWallet.getBalance();
-                    List<Transaction> targetListOfTransactions = targetWallet.getListOfTransactions();
+                        availableBalance = wallet.getBalance();
+                        targetAvailableBalance = targetWallet.getBalance();
+                        List<Transaction> targetListOfTransactions = targetWallet.getListOfTransactions();
 
-                    if (availableBalance >= request.getAmount()) {
-                        TransactionRequest transactionRequest = new TransactionRequest();
-                        transactionRequest.setTransactionType(request.getTransactionType());
-                        transactionRequest.setDescription(request.getDescription());
-                        transactionRequest.setAmount(request.getAmount());
-                        transactionRequest.setReceiver(request.getReceiver());
-                        transactionService.addTransaction(transactionRequest, token);
+                        if (availableBalance >= request.getAmount()) {
+                            TransactionRequest transactionRequest = new TransactionRequest();
+                            transactionRequest.setTransactionType(request.getTransactionType());
+                            transactionRequest.setDescription(request.getDescription());
+                            transactionRequest.setAmount(request.getAmount());
+                            transactionRequest.setReceiver(request.getReceiver());
+                            transactionService.addTransaction(transactionRequest, token);
 
-                        if (transactionRequest != null) {
                             targetWallet.setBalance(targetAvailableBalance + request.getAmount());
                             wallet.setBalance(availableBalance - request.getAmount());
 
@@ -166,14 +167,8 @@ public class WalletServiceImpl implements WalletService {
             } else {
                 throw new UserNotFoundException("User Not Found with mobile number " + validateUser.getMobileNumber());
             }
-        } else {
-            throw new UserException("Please Login in");
+            return null;
         }
-
-        return null;
-    }
-
-
 
     @Override
     public Wallet getById(String id, String token) throws UserException {

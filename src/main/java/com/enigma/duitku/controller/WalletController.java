@@ -1,5 +1,6 @@
 package com.enigma.duitku.controller;
 
+
 import com.enigma.duitku.exception.*;
 import com.enigma.duitku.model.request.TransactionRequest;
 import com.enigma.duitku.model.response.BankAccountResponse;
@@ -55,12 +56,13 @@ public class WalletController {
     }
 
     @PostMapping("/transfertouser")
-    public ResponseEntity<?>transferMoneyBetweenApplicationUsers(@RequestBody TransactionRequest request, HttpServletRequest httpServletRequest) throws UserException, TargetUserNotFoundException, UserNotFoundException, TransferException {
+    public ResponseEntity<?>transferMoneyBetweenApplicationUsers(@RequestBody TransactionRequest request, HttpServletRequest httpServletRequest)
+            throws UserException, TargetUserNotFoundException, UserNotFoundException, TransferException {
 
         try {
             String jwtToken = authTokenFilter.parseJwt(httpServletRequest);
 
-            if(jwtToken == null) {
+            if (jwtToken == null) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                         .body(CommonResponse.builder()
                                 .statusCode(HttpStatus.UNAUTHORIZED.value())
@@ -68,6 +70,7 @@ public class WalletController {
             }
 
             TransactionResponse  transactionResponse = walletService.transferMoneyToUser(request, jwtToken);
+
             return ResponseEntity.status(HttpStatus.OK)
                     .body(CommonResponse.builder()
                             .statusCode(HttpStatus.OK.value())
@@ -75,11 +78,13 @@ public class WalletController {
                             .data(transactionResponse)
                             .build());
 
-        } catch (RuntimeException e){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(CommonResponse.<BankAccountResponse>builder()
-                            .statusCode(HttpStatus.NOT_FOUND.value())
-                            .message("Failed transfer to user" + e.getMessage())
+        } catch (RuntimeException | UserNotFoundException e) {
+            HttpStatus httpStatus = (e instanceof UserNotFoundException) ? HttpStatus.NOT_FOUND : HttpStatus.INTERNAL_SERVER_ERROR;
+
+            return ResponseEntity.status(httpStatus)
+                    .body(CommonResponse.builder()
+                            .statusCode(httpStatus.value())
+                            .message("Failed transfer to user: " + e.getMessage())
                             .build());
         }
     }

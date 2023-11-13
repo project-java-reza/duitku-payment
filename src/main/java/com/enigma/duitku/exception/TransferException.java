@@ -1,6 +1,8 @@
 package com.enigma.duitku.exception;
 
-public class TransferException extends Exception{
+
+public class TransferException extends RuntimeException{
+
 
     public TransferException() {
     }
