@@ -17,10 +17,7 @@ public class TransactionRequest  {
     private String transactionType;
     private String bankName;
     private Double amount;
-    private LocalDateTime localDate;
     private String userId;
     private String beneficiaryMobileNumber;
     private String billType;
-    private String senderMobileNumber;
-    private String receiverMobileNumber;
 }

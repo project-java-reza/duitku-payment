@@ -61,8 +61,8 @@ public class WalletController {
 
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<?> getWalletById(@PathVariable String id, HttpServletRequest httpServletRequest) throws UserException {
+    @GetMapping()
+    public ResponseEntity<?> getWalletById(@RequestParam String id, HttpServletRequest httpServletRequest) throws UserException {
         try {
             String jwtToken = authTokenFilter.parseJwt(httpServletRequest);
             return ResponseEntity.status(HttpStatus.OK)

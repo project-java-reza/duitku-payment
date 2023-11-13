@@ -14,6 +14,7 @@ import com.enigma.duitku.security.JwtUtils;
 import com.enigma.duitku.service.TransactionService;
 import com.enigma.duitku.service.UserService;
 import com.enigma.duitku.service.WalletService;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.TransactionException;
@@ -28,6 +29,7 @@ import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -92,22 +94,8 @@ public class TransactionServiceImpl implements TransactionService {
         }
     }
 
-    @Override
-    public Transaction viewTransactionId(String walletId, String token)throws UserException {
-        String loggedInUserId = jwtUtils.extractUserId(token);
-        User user = userService.getById(loggedInUserId);
-
-        if(user != null) {
-            Optional<Transaction> optionalTransaction = Optional.ofNullable(transactionRepository.findByWalletId(walletId));
-
-            if(optionalTransaction.isPresent()) {
-                return  optionalTransaction.get();
-            } else {
-                throw new TransactionException("No Transaction Found With This Transaction Id: " + walletId);
-            }
-        } else {
-            throw new UserException("Plese Login In ");
-        }
+    public Page<Transaction> getTransactionsByWalletId(String someWalletId, Pageable pageable) {
+        return transactionRepository.findByWalletId(someWalletId, pageable);
     }
 
     // Admin
@@ -120,6 +108,7 @@ public class TransactionServiceImpl implements TransactionService {
             List<TransactionResponse> transactionResponses = new ArrayList<>();
             for (Transaction transaction : transactions.getContent()) {
                 TransactionResponse transactionResponse = new TransactionResponse(transaction.getId(), transaction.getDescription(), transaction.getType(), transaction.getAmount(), transaction.getWalletId(), null);
+
                 transactionResponses.add(transactionResponse);
             }
             return new PageImpl<>(transactionResponses, pageable, transactions.getTotalElements());

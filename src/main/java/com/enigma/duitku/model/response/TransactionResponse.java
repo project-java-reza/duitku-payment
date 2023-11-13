@@ -16,5 +16,4 @@ public class TransactionResponse {
     private Double amount;
     private String errors;
     private Double balance;
-
 }

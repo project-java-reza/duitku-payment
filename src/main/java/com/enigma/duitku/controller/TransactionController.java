@@ -11,6 +11,7 @@ import com.enigma.duitku.security.AuthTokenFilter;
 import com.enigma.duitku.service.TransactionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -28,24 +29,16 @@ public class TransactionController {
 
     private final AuthTokenFilter authTokenFilter;
 
-    @GetMapping("/view/{id}")
-    public ResponseEntity<?> viewTransaction(@RequestParam  String walletId, HttpServletRequest httpServletRequest) throws UserException{
-        try {
-            String jwtToken = authTokenFilter.parseJwt(httpServletRequest);
-            return ResponseEntity.status(HttpStatus.OK)
-                    .body(CommonResponse.builder()
-                            .data(transactionService.viewTransactionId(walletId, jwtToken))
-                            .build());
-        }catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(CommonResponse.<BankAccountResponse>builder()
-                            .statusCode(HttpStatus.NOT_FOUND.value())
-                            .message("View by id failed" + e.getMessage())
-                            .build());
-        }
-
+    @GetMapping("/{walletId}")
+    public Page<Transaction> getTransactionsByWalletId(
+            @PathVariable String walletId,
+            @RequestParam(defaultValue = "0") Integer page,
+            @RequestParam(defaultValue = "10") Integer size
+    ) {
+        return transactionService.getTransactionsByWalletId(walletId, PageRequest.of(page, size));
     }
 
+    // Admin
     @GetMapping("/viewall")
     public ResponseEntity<?> viewAllTransaction(
             @RequestParam(name= "page", required = false, defaultValue = "0")Integer page,

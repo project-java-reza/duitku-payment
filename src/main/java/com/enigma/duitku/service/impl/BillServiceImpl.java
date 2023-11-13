@@ -22,6 +22,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -53,6 +54,8 @@ public class BillServiceImpl implements BillService {
                 transaction.setTransactionType("Bill Payment");
                 transaction.setAmount(bill.getAmount());
                 transaction.setDescription(bill.getDescription());
+                bill.setBillType("Bill Payment");
+                bill.setPaymentDateTime(LocalDateTime.now());
                 transactionService.addTransaction(transaction, token);
 
                 if(transaction != null) {
@@ -62,7 +65,7 @@ public class BillServiceImpl implements BillService {
                     walletRepository.saveAndFlush(wallet);
                     return TransactionResponse.builder()
                             .amount(transaction.getAmount())
-                            .transactionType(transaction.getBillType())
+                            .transactionType(bill.getBillType())
                             .description(transaction.getDescription())
                             .receiver(transaction.getReceiver())
                             .build();
@@ -94,7 +97,7 @@ public class BillServiceImpl implements BillService {
             List<Bill> paginatedBillList = billList.subList(start, end);
 
             Pageable pageable = PageRequest.of(page, size);
-            return new PageImpl<>(paginatedBillList, pageable, billList.size());
+            return new PageImpl<>(paginatedBillList,  pageable, billList.size());
         } else {
             throw new UserException("Please login in !");
         }

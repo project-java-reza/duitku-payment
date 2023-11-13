@@ -55,4 +55,3 @@ public class SecurityConfiguration {
 }
 
 
-// sampai di pertemuan ini kita sudah butuhin semua, kita sudah ada Entry Point , kita udah ada Token Filter nya, kita udah ada untuk Bcrytput si password nya, kita sudah buat file CustomAccessDenied, kita sudah buat file Jwt Utils nya, file SecurityConfiguration sudah kita buat, nah karena kita sudah buat semanya berarti tinggal kita implementasiin di service nya. kita buat ValidationUtil dulu sebelum buat service
