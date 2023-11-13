@@ -41,11 +41,18 @@ The Digital Wallet Application's REST API, developed by Duitku, offers users the
     - Endpoint for Viewing Bank Account Information
     - Endpoint for Topping Up Wallet from Bank Account Balance
     - Endpoint for Transferring Money from Wallet to Bank Account
+  
+    - Endpoint for Transferring Money from Money
 
 ##  Admin Functionalities
 
 - **Authentication Management**
     - Endpoint for Sign Up
     - Endpoint for Sign In
+  
+  **Financial Management**
+
+    - Endpoint for Get Users
+    - Endpoint for Get All Transaction
 
 <a href="https://ibb.co/dbXMcRS"><img src="https://i.ibb.co/8zGsBHJ/Duitku-drawio.png" alt="Duitku-drawio" border="0"></a>
