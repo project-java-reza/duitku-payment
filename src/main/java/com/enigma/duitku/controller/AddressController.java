@@ -57,17 +57,15 @@ public class AddressController {
     }
 
     @PutMapping("/update")
-    public ResponseEntity<?> updateAddress(@RequestBody AddressRequest addressRequest, HttpServletRequest httpServletRequest) throws UserException {
+    public ResponseEntity<?> updateAddress(@RequestBody Address address, HttpServletRequest httpServletRequest) throws UserException {
         try {
             String jwtToken = authTokenFilter.parseJwt(httpServletRequest);
             if(jwtToken != null) {
-                AddressResponse addressResponse = addressService.updateAddress(addressRequest, jwtToken);
-
-                return ResponseEntity.status(HttpStatus.ACCEPTED)
-                        .body(CommonResponse.builder()
-                                .statusCode(HttpStatus.ACCEPTED.value())
-                                .data(addressResponse)
-                                .message("Successfully update address")
+                return ResponseEntity.status(HttpStatus.OK)
+                        .body(CommonResponse.<Address>builder()
+                                .statusCode(HttpStatus.OK.value())
+                                .message("Successfully update customer")
+                                .data(addressService.updateAddress(address, jwtToken))
                                 .build());
             } else {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED)

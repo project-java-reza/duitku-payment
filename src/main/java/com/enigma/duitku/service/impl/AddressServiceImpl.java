@@ -67,26 +67,13 @@ public class AddressServiceImpl implements AddressService {
     }
 
     @Override
-    public AddressResponse updateAddress(AddressRequest addressRequest, String token) throws UserException {
+    public Address updateAddress(Address address, String token) throws UserException {
         String loggedInUserId = jwtUtils.extractUserId(token);
         User user = userService.getById(loggedInUserId);
 
         if(user != null) {
-
-           Address currentAddress = addressRepository.findById(addressRequest.getId()).orElse(null);
-
-            currentAddress.setState(addressRequest.getState());
-            currentAddress.setCity(addressRequest.getCity());
-            currentAddress.setStreetName(addressRequest.getStreetName());
-            currentAddress.setPostalCode(addressRequest.getPostalCode());
-
-            addressRepository.saveAndFlush(currentAddress);
-
-            return AddressResponse.builder()
-                    .postalCode(addressRequest.getPostalCode())
-                    .streetName(addressRequest.getStreetName())
-                    .state(addressRequest.getState())
-                    .build();
+            Address currentAddress = getAddressId(address.getId());
+            return addressRepository.save(address);
         } else {
             throw new UserException("Please Login in!");
         }
@@ -134,8 +121,4 @@ public class AddressServiceImpl implements AddressService {
             return new PageImpl<>(addressResponses, pageable, addresses.getTotalElements());
     }
 
-    @Override
-    public Address viewAddress() {
-        return null;
-    }
 }

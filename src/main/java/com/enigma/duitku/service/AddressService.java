@@ -9,11 +9,10 @@ import org.springframework.data.domain.Page;
 public interface AddressService {
 
     AddressResponse addAddress(AddressRequest addressRequest, String token) throws UserException;
-    AddressResponse updateAddress(AddressRequest addressRequest, String token) throws UserException;
+    Address updateAddress(Address address, String token) throws UserException;
     Address getAddressId(String id);
     void removeAddress(String id, String token) throws UserException;
 
     // Admin
     Page<AddressResponse> viewAllAddress(Integer page, Integer size) ;
-    Address viewAddress() throws UserException;
 }
