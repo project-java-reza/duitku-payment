@@ -133,6 +133,12 @@ public class WalletServiceImpl implements WalletService {
                         Wallet wallet = user.get().getWallet();
                         Wallet targetWallet = targetUser.get().getWallet();
 
+                        if (validateUser.getMobileNumber().equals(request.getTargetMobileNumber())) {
+                            return TransactionResponse.builder()
+                                    .errors("Cannot transfer money to yourself")
+                                    .build();
+                        }
+
                         availableBalance = wallet.getBalance();
                         targetAvailableBalance = targetWallet.getBalance();
                         List<Transaction> targetListOfTransactions = targetWallet.getListOfTransactions();
