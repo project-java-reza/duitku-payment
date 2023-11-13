@@ -133,6 +133,8 @@ public class WalletServiceImpl implements WalletService {
                         Wallet wallet = user.get().getWallet();
                         Wallet targetWallet = targetUser.get().getWallet();
 
+                        // TODO: Extract the validation logic for self-transfer into a separate method or use a custom annotation
+
                         if (validateUser.getMobileNumber().equals(request.getTargetMobileNumber())) {
                             return TransactionResponse.builder()
                                     .errors("Cannot transfer money to yourself")
@@ -143,6 +145,8 @@ public class WalletServiceImpl implements WalletService {
                         targetAvailableBalance = targetWallet.getBalance();
                         List<Transaction> targetListOfTransactions = targetWallet.getListOfTransactions();
 
+                        // TODO: Extract the transaction processing logic into a separate method for better readability
+
                         if (availableBalance >= request.getAmount()) {
                             TransactionRequest transactionRequest = new TransactionRequest();
                             transactionRequest.setTransactionType(request.getTransactionType());
@@ -150,6 +154,8 @@ public class WalletServiceImpl implements WalletService {
                             transactionRequest.setAmount(request.getAmount());
                             transactionRequest.setReceiver(request.getReceiver());
                             transactionService.addTransaction(transactionRequest, token);
+
+                            // TODO: Consider extracting the minimum balance validation into a separate method or using a constant
 
                             if (request.getAmount() < 10000) {
                                 return TransactionResponse.builder()
