@@ -1,0 +1,2303 @@
+{
+	"info": {
+		"_postman_id": "84526671-4c12-4cdf-b93d-c2408e80dfe4",
+		"name": "Duitku Test",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "17794604",
+		"_collection_link": "https://lunar-moon-663097.postman.co/workspace/Tim-1-Epical-Glory~da73a41d-dd7a-4182-86b6-6021cc9d4c28/collection/17794604-84526671-4c12-4cdf-b93d-c2408e80dfe4?action=share&source=collection_link&creator=17794604"
+	},
+	"item": [
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Register Admin",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"mobileNumber\": \"0812345678\",\r\n  \"email\" : \"admin@gmail.com\",\r\n  \"password\": \"admin\",\r\n  \"name\": \"jamet admin\",\r\n  \"address\": \"Jalan serang\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/auth/register/admin",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"auth",
+								"register",
+								"admin"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login Admin",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNjk5MTY1MzQzLCJleHAiOjE3MDE3NTczNDN9.X5WGErlXta2IJSitByB0egNdHTKaG5nD2oUD_fbGuoM",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"mobileNumber\" : \"0812345678\",\r\n    \"password\": \"admin\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/auth/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login User",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n     \"mobileNumber\": \"085156811979\",\r\n    \"password\": \"user1\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/auth/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Register User",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"mobileNumber\": \"085156811979\",\r\n  \"email\" : \"user@gmail.com\",\r\n  \"password\": \"user\",\r\n  \"name\": \"Rizqireza\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/auth/register/user",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"auth",
+								"register",
+								"user"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Register User Failed",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"mobileNumber\": \"08515\",\r\n  \"email\" : \"user12321@gmail.com\",\r\n  \"password\": \"user21312\",\r\n  \"name\": \"Rizqireza213213\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/auth/register/user",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"auth",
+								"register",
+								"user"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Users for Admin",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIwODUxNTY4MTE5NzkiLCJpYXQiOjE2OTk2MTgyNjMsImV4cCI6MTY5OTYyNjI2M30.8Qk0UJOvM7rta3DqLnIpO2cwVElHmYQQFJjRZOQdY_vvsClvgZfQ7NtLm7dhnSGDl1SAg40q7ZMLWLCQhAfWcA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/auth",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"auth"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Authentication Akun 2",
+			"item": [
+				{
+					"name": "Register Admin",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"mobileNumber\": \"0812345678\",\r\n  \"email\" : \"admin@gmail.com\",\r\n  \"password\": \"admin\",\r\n  \"name\": \"jamet admin\",\r\n  \"address\": \"Jalan serang\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/auth/register/admin",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"auth",
+								"register",
+								"admin"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login Admin",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNjk5MTY1MzQzLCJleHAiOjE3MDE3NTczNDN9.X5WGErlXta2IJSitByB0egNdHTKaG5nD2oUD_fbGuoM",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"mobileNumber\" : \"0812345678\",\r\n    \"password\": \"admin\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/auth/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login User 2",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n     \"mobileNumber\": \"085156811971\",\r\n    \"password\": \"user2\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/auth/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Register User 2",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"mobileNumber\": \"085156811971\",\r\n  \"email\" : \"user2@gmail.com\",\r\n  \"password\": \"user2\",\r\n  \"name\": \"Rizqireza2\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/auth/register/user",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"auth",
+								"register",
+								"user"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Address User",
+			"item": [
+				{
+					"name": "Create Address User",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIwODEyMzQ1Njc4IiwiaWF0IjoxNjk5ODQ2MTcwLCJleHAiOjE2OTk4NTQxNzB9.Okxug55c1J5BPzil9hLMDQHgmNBHYKSu2UepHtIkzwoScSreps8VbIUvOo1va8YlRb_DNdggKS_NsiqsJkVCfQ",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"streetName\" : \"Jalan Raya\",\r\n  \"city\" : \"Tangerang\",\r\n  \"state\": \"Banten\",\r\n  \"postalCode\": \"15610\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/address/add",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"address",
+								"add"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "(409) Create Address User",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIwODUxNTY4MTE5NzEiLCJpYXQiOjE2OTk4MzA5MDMsImV4cCI6MTY5OTgzODkwM30.sO4F32FoP0T0dI09BhFU5A4n5FKVBBYaox4IEa72g8KGv3nAplNxu64MOWuogI9BTmS1kdl-pU5l1Utm6H2UcA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"streetName\" : \"Jalan Raya\",\r\n  \"city\" : \"Tangerang\",\r\n  \"state\": \"Banten\",\r\n  \"postalCode\": \"15610\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/address/add",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"address",
+								"add"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get User By Id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIwODEyMzQ1Njc4IiwiaWF0IjoxNjk5ODI4ODAxLCJleHAiOjE2OTk4MzY4MDF9.VX1W0ZeiqH9fpqv5HFRkIOYNoJe4CN0QUucyNKqZHQ061aLfvcsv43KRCKJdq5liJD2KVr2Q3Z8_Wv5XJGNE1w",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/address/2b07afe4-3d57-4c7d-92a5-955778a910f4",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"address",
+								"2b07afe4-3d57-4c7d-92a5-955778a910f4"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update User By Id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIwODUxNTY4MTE5NzkiLCJpYXQiOjE2OTk4NTcwODEsImV4cCI6MTY5OTg2NTA4MX0.XWI81j20Uz7bxODpaiWahR8Z4kSQSAb5Vj8fXOBV2Ux28LUG2TsZKzgQTrBf8vw_rz4bAP2kYsofwwXfj1Jg5Q",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n   \"id\": \"8fb83e59-fd6e-4467-b517-450405114ff7\",\r\n  \"streetName\" : \"Jalan Raya Tangerang\",\r\n  \"city\" : \"Bandung sdf\",\r\n  \"state\": \"Banten sdfds \",\r\n  \"postalCode\": \"156102\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/address/update",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"address",
+								"update"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "73e46e0a-2209-42a0-a95e-532e5d0f48c5",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Address",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIwODUxNTY4MTE5NzkiLCJpYXQiOjE2OTk4NDM5MDEsImV4cCI6MTY5OTg1MTkwMX0.Thnnmg6T_5U4q-G8AdXa70Op5PrKvfd_oGU63MDNMI1JWN0NIyz-48IlyYhZZxn2lOVFdqcMFKmVTeIrhbeU0Q",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/address/delete?id=6143d8ad-ffce-4aa0-9fda-2dd5e51aaddb",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"address",
+								"delete"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "6143d8ad-ffce-4aa0-9fda-2dd5e51aaddb"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Addresses for admin",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIwODEyMzQ1Njc4IiwiaWF0IjoxNjk5ODMwNjEwLCJleHAiOjE2OTk4Mzg2MTB9.TMUB2S8-xw0L4vHnthxUxnvvrXSVESu3quWe74RRson4kHlTy6A70KGYMnJp-D8JUqXrr3KhbYN6ZX15NlSbcg",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/address/allAddresses",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"address",
+								"allAddresses"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Address User Akun 2",
+			"item": [
+				{
+					"name": "Create Address User",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIwODUxNTY4MTE5NzEiLCJpYXQiOjE2OTk4MzY3NjIsImV4cCI6MTY5OTg0NDc2Mn0.nRRr_eJl7cnRnkp_4ycYiNb93iRXLVU88qjY9IJ4AheSip8CjVMmjN4JG3TJbGBEU4pT1zNLcQRLEKwoCeQUqA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"streetName\" : \"Jalan Raya 2\",\r\n  \"city\" : \"Tangerang 2\",\r\n  \"state\": \"Banten 2\",\r\n  \"postalCode\": \"15610\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/address/add",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"address",
+								"add"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "(409) Create Address User",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIwODUxNTY4MTE5NzEiLCJpYXQiOjE2OTk4MzY3NjIsImV4cCI6MTY5OTg0NDc2Mn0.nRRr_eJl7cnRnkp_4ycYiNb93iRXLVU88qjY9IJ4AheSip8CjVMmjN4JG3TJbGBEU4pT1zNLcQRLEKwoCeQUqA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"streetName\" : \"Jalan Raya 2\",\r\n  \"city\" : \"Tangerang 2\",\r\n  \"state\": \"Banten 2\",\r\n  \"postalCode\": \"15610\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/address/add",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"address",
+								"add"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get User By Id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIwODEyMzQ1Njc4IiwiaWF0IjoxNjk5ODI4ODAxLCJleHAiOjE2OTk4MzY4MDF9.VX1W0ZeiqH9fpqv5HFRkIOYNoJe4CN0QUucyNKqZHQ061aLfvcsv43KRCKJdq5liJD2KVr2Q3Z8_Wv5XJGNE1w",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/address/2b07afe4-3d57-4c7d-92a5-955778a910f4",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"address",
+								"2b07afe4-3d57-4c7d-92a5-955778a910f4"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update User By Id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIwODUxNTY4MTE5NzkiLCJpYXQiOjE2OTk3OTU5ODEsImV4cCI6MTY5OTgwMzk4MX0.-K7NnCDpVgwhraXM13PMFq8cBmje6GfsNHppQuxJwrO7dE1HWNn0X6kTfL_aW7I3rNjDbHkXjexsk7f8HVzaKw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n   \"id\": \"73e46e0a-2209-42a0-a95e-532e5d0f48c5\",\r\n  \"streetName\" : \"Jalan Raya Tangerang Banten asdf\",\r\n  \"city\" : \"Bandung sdf\",\r\n  \"state\": \"Banten sdfds \",\r\n  \"postalCode\": \"156102\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/address/update",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"address",
+								"update"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "73e46e0a-2209-42a0-a95e-532e5d0f48c5",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Address",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIwODUxNTY4MTE5NzEiLCJpYXQiOjE2OTk4MzA5MDMsImV4cCI6MTY5OTgzODkwM30.sO4F32FoP0T0dI09BhFU5A4n5FKVBBYaox4IEa72g8KGv3nAplNxu64MOWuogI9BTmS1kdl-pU5l1Utm6H2UcA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/address/delete?id=66ffcd95-2f6c-4128-9d4b-919b10f1e575",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"address",
+								"delete"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "66ffcd95-2f6c-4128-9d4b-919b10f1e575"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Addresses for admin",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIwODEyMzQ1Njc4IiwiaWF0IjoxNjk5ODMwNjEwLCJleHAiOjE2OTk4Mzg2MTB9.TMUB2S8-xw0L4vHnthxUxnvvrXSVESu3quWe74RRson4kHlTy6A70KGYMnJp-D8JUqXrr3KhbYN6ZX15NlSbcg",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/address/allAddresses",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"address",
+								"allAddresses"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Bank Account",
+			"item": [
+				{
+					"name": "Add Bank Account BCA",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIwMjMxMTIzIiwiaWF0IjoxNjk5NjAzMTk2LCJleHAiOjE2OTk2MTExOTZ9.pwVzGuSM2lbvglpPyVAUz1zKDC9y3cZ1tX4R36oLTBc8pWCtL_m0Awt_qFYB989XvgwHIBNBi-770V_OwHVMoQ",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"mobileNumber\": \"0231123\",\r\n    \"bankName\": \"BCA\",\r\n    \"balance\": 5000000,\r\n    \"accountNo\": \"002\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/bankaccount/add",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"bankaccount",
+								"add"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Top Up Wallet From Bank",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIwODUxNTY4MTE5NzkiLCJpYXQiOjE2OTk4ODE4NTQsImV4cCI6MTY5OTg4OTg1NH0.xrCe8gqIhLTrqzPN7WlLG1eJPKQUvfbvzvmJb8Z0lZTpARV2GjAkaBVRvKFn-v_Z9ZOEDNX1KixvL4uhLJfvlQ",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n     \"mobileNumber\": \"085156811978\",\r\n     \"bankName\": \"BCA\",\r\n     \"amount\": 20000,\r\n     \"receiver\": \"Rizqireza \" \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/bankaccount/topup",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"bankaccount",
+								"topup"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "View Profile Bank by id",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIwMjMxMDIzMTAyMzEiLCJpYXQiOjE2OTk1OTYxNjIsImV4cCI6MTY5OTYwNDE2Mn0.Nk1sZ78-n6p_JNjXCwKCDHH5wDlRsvDPO2VXH_482qUTi3vt0pDK1chwOoeAQHujQoucURj4s1eDjtgyM7LGDg",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/bankaccount/profile/023102310231",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"bankaccount",
+								"profile",
+								"023102310231"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Bank Account",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIwODUxNTY4MTE5NzkiLCJpYXQiOjE2OTk3NDgzNDQsImV4cCI6MTY5OTc1NjM0NH0.nitQgHOJKM9wCBAo_Mx3EyhrJkLZ8OK5sfLChz_UFaP2xcnPD3Z87jK4iL6YB89oxOqNH5tQAhD5RzMyrnzMFg",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/bankaccount/viewall",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"bankaccount",
+								"viewall"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Account Bank",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIwODUxNTY4MTE5NzEiLCJpYXQiOjE2OTk4MzA5MDMsImV4cCI6MTY5OTgzODkwM30.sO4F32FoP0T0dI09BhFU5A4n5FKVBBYaox4IEa72g8KGv3nAplNxu64MOWuogI9BTmS1kdl-pU5l1Utm6H2UcA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": \"085156811979\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/bankaccount/delete?id=085156811979",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"bankaccount",
+								"delete"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "085156811979"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Bank Account Akun 2",
+			"item": [
+				{
+					"name": "Add Bank Account MANDIRI Akun 2",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIwODUxNTY4MTE5NzEiLCJpYXQiOjE2OTk4Mzg2NTYsImV4cCI6MTY5OTg0NjY1Nn0.3jQ7VzZCj6dvt7h52Mfu35xQ2vm_Exw2Ct1AJkZcp0qYTn442IVV4JI4-3JlUASOW0UDJjQARCxa9mHB3JyBrw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"mobileNumber\": \"085156811971\",\r\n    \"bankName\": \"Mandiri\",\r\n    \"balance\": 200000,\r\n    \"accountNo\": \"38776474833\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/bankaccount/add",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"bankaccount",
+								"add"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "View Profile Bank by id",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIwODUxNTY4MTE5NzEiLCJpYXQiOjE2OTk4MzA5MDMsImV4cCI6MTY5OTgzODkwM30.sO4F32FoP0T0dI09BhFU5A4n5FKVBBYaox4IEa72g8KGv3nAplNxu64MOWuogI9BTmS1kdl-pU5l1Utm6H2UcA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/bankaccount/profile/085156811971",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"bankaccount",
+								"profile",
+								"085156811971"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Bank Account",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIwODUxNTY4MTE5NzkiLCJpYXQiOjE2OTk3NDgzNDQsImV4cCI6MTY5OTc1NjM0NH0.nitQgHOJKM9wCBAo_Mx3EyhrJkLZ8OK5sfLChz_UFaP2xcnPD3Z87jK4iL6YB89oxOqNH5tQAhD5RzMyrnzMFg",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/bankaccount/viewall",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"bankaccount",
+								"viewall"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Account Bank",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIwODUxNTY4MTE5NzEiLCJpYXQiOjE2OTk4MzA5MDMsImV4cCI6MTY5OTgzODkwM30.sO4F32FoP0T0dI09BhFU5A4n5FKVBBYaox4IEa72g8KGv3nAplNxu64MOWuogI9BTmS1kdl-pU5l1Utm6H2UcA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": \"085156811979\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/bankaccount/delete?id=085156811979",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"bankaccount",
+								"delete"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "085156811979"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Top Up Wallet From Bank akun 2",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIwODUxNTY4MTE5NzEiLCJpYXQiOjE2OTk4Mzg0NTEsImV4cCI6MTY5OTg0NjQ1MX0.DPxXQuwN03dodniycLQS3jjCwE0iqwWftA8ro1Qo8Z9HGCyPecCrl6SOUlwc9aEl99nKPOheNMbPUQRABSvojw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n     \"mobileNumber\": \"085156811979\",\r\n     \"bankName\": \"BCA\",\r\n     \"amount\": 30000,\r\n     \"receiver\": \"Rizqireza2\" \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/bankaccount/topup",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"bankaccount",
+								"topup"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Benefiacry / transfer wallet to bank mobile number",
+			"item": [
+				{
+					"name": "Add Beneficiary",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIwODUxNTY4MTE5NzkiLCJpYXQiOjE2OTk4MzUxNDcsImV4cCI6MTY5OTg0MzE0N30.CE_PfUx6E7w0EqaIdnZou5kFEQeqWVXw6bnqjXcaJjdhOp9CE20SLRxAHMOWTsbrcOxgqrP0VzLNTrSFsFToWQ",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\"mobileNumber\": \"0987654321\",\r\n\"name\": \"Udin 1\",\r\n\"accountNo\": \"232112323\",\r\n \"bankName\": \"BRI\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/beneficiary/add",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"beneficiary",
+								"add"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "(409) Add Beneficiary",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIwODUxNTY4MTE5NzkiLCJpYXQiOjE2OTk4MzUxNDcsImV4cCI6MTY5OTg0MzE0N30.CE_PfUx6E7w0EqaIdnZou5kFEQeqWVXw6bnqjXcaJjdhOp9CE20SLRxAHMOWTsbrcOxgqrP0VzLNTrSFsFToWQ",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\"mobileNumber\": \"0987654321\",\r\n\"name\": \"Udin 1\",\r\n\"accountNo\": \"232112323\",\r\n \"bankName\": \"BRI\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/beneficiary/add",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"beneficiary",
+								"add"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "(404) Add Beneficiary Bad Request",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIwODUxNTY4MTE5NzkiLCJpYXQiOjE2OTk4MzUxNDcsImV4cCI6MTY5OTg0MzE0N30.CE_PfUx6E7w0EqaIdnZou5kFEQeqWVXw6bnqjXcaJjdhOp9CE20SLRxAHMOWTsbrcOxgqrP0VzLNTrSFsFToWQ",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\"mobileNumber\": \"0217060739256546546\",\r\n\"name\": \"Sumanto\",\r\n\"accountNo\": \"20222\",\r\n \"bankName\": \"BCA\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/beneficiary/add",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"beneficiary",
+								"add"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "View All Beneficiary",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIwODUxNTY4MTE5NzkiLCJpYXQiOjE2OTk2NTQ4MjcsImV4cCI6MTY5OTY2MjgyN30.FIAfsBC4RMPL-5mkE3MHA-y2IJvBTnzIVZIc7JcHMbBcIlmnXcNHn-zHlK2UHUsdHOFvy2REEBhzTgOjc4F9VA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/beneficiary/viewall",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"beneficiary",
+								"viewall"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Beneficiary",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIwODUxNTY4MTE5NzkiLCJpYXQiOjE2OTk2OTQ1MzIsImV4cCI6MTY5OTcwMjUzMn0.m4qjyp1zk8ZhlsPcYf55gSNseQkS6IlWizYbdCxbC2kT8PExG-Xsuu035DT4ZNt5UBW-cMj32GUrgI26ldh1rQ",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/beneficiary/delete?beneficiaryMobileNumber=085156811979",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"beneficiary",
+								"delete"
+							],
+							"query": [
+								{
+									"key": "beneficiaryMobileNumber",
+									"value": "085156811979"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Benefiacry Akun 2/ transfer wallet to bank mobile number",
+			"item": [
+				{
+					"name": "Add Beneficiary Akun 2",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIwODUxNTY4MTE5NzEiLCJpYXQiOjE2OTk4Mzg2NTYsImV4cCI6MTY5OTg0NjY1Nn0.3jQ7VzZCj6dvt7h52Mfu35xQ2vm_Exw2Ct1AJkZcp0qYTn442IVV4JI4-3JlUASOW0UDJjQARCxa9mHB3JyBrw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\"mobileNumber\": \"0123456789\",\r\n\"name\": \"Udin 2\",\r\n\"accountNo\": \"23454343\",\r\n \"bankName\": \"BNI\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/beneficiary/add",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"beneficiary",
+								"add"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "(409) Add Beneficiary",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIwODUxNTY4MTE5NzkiLCJpYXQiOjE2OTk4MzUxNDcsImV4cCI6MTY5OTg0MzE0N30.CE_PfUx6E7w0EqaIdnZou5kFEQeqWVXw6bnqjXcaJjdhOp9CE20SLRxAHMOWTsbrcOxgqrP0VzLNTrSFsFToWQ",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\"mobileNumber\": \"0987654321\",\r\n\"name\": \"Udin 1\",\r\n\"accountNo\": \"232112323\",\r\n \"bankName\": \"BRI\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/beneficiary/add",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"beneficiary",
+								"add"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "(404) Add Beneficiary Bad Request",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIwODUxNTY4MTE5NzkiLCJpYXQiOjE2OTk4MzUxNDcsImV4cCI6MTY5OTg0MzE0N30.CE_PfUx6E7w0EqaIdnZou5kFEQeqWVXw6bnqjXcaJjdhOp9CE20SLRxAHMOWTsbrcOxgqrP0VzLNTrSFsFToWQ",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\"mobileNumber\": \"0217060739256546546\",\r\n\"name\": \"Sumanto\",\r\n\"accountNo\": \"20222\",\r\n \"bankName\": \"BCA\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/beneficiary/add",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"beneficiary",
+								"add"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "View All Beneficiary",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIwODUxNTY4MTE5NzEiLCJpYXQiOjE2OTk4MzkyOTYsImV4cCI6MTY5OTg0NzI5Nn0.jBWKYghoD2ROP7yFgQ_eexOOnoop0Bh-o5KG-yfj05trbp97Z5naQnb6_2U3SfD-63MQmzDrcuKHcMR5fgWBiA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/beneficiary/viewall",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"beneficiary",
+								"viewall"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Beneficiary",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIwODUxNTY4MTE5NzkiLCJpYXQiOjE2OTk2OTQ1MzIsImV4cCI6MTY5OTcwMjUzMn0.m4qjyp1zk8ZhlsPcYf55gSNseQkS6IlWizYbdCxbC2kT8PExG-Xsuu035DT4ZNt5UBW-cMj32GUrgI26ldh1rQ",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/beneficiary/delete?beneficiaryMobileNumber=085156811971",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"beneficiary",
+								"delete"
+							],
+							"query": [
+								{
+									"key": "beneficiaryMobileNumber",
+									"value": "085156811971"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Wallet",
+			"item": [
+				{
+					"name": "Transfer Money From Wallet To Beneficiary M Banking",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIwODUxNTY4MTE5NzkiLCJpYXQiOjE2OTk4NDUzODgsImV4cCI6MTY5OTg1MzM4OH0.HegH45JQcYp2TZdSRa7IT6QnGge-ldI389KzHaLox9ZhXVhv89LdX3b1eI-zN8Wb99WDsWWyl0sV2htDDHqP1w",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"beneficiaryMobileNumber\": \"0987654321\",\r\n    \"description\" : \"Uang kaget\",\r\n    \"amount\": 5000,\r\n    \"receiver\": \"Udin 1\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/wallet/transfertobeneficiary",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"wallet",
+								"transfertobeneficiary"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "(500) Transfer Money From Wallet To Beneficiary M Banking Not Registered",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIwODUxNTY4MTE5NzkiLCJpYXQiOjE2OTk4MzUxNDcsImV4cCI6MTY5OTg0MzE0N30.CE_PfUx6E7w0EqaIdnZou5kFEQeqWVXw6bnqjXcaJjdhOp9CE20SLRxAHMOWTsbrcOxgqrP0VzLNTrSFsFToWQ",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"beneficiaryMobileNumber\": \"089756477423435435\",\r\n    \"description\" : \"Uang kaget\",\r\n    \"amount\": 5000,\r\n    \"receiver\": \"Udin 1\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/wallet/transfertobeneficiary",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"wallet",
+								"transfertobeneficiary"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Transfer Money from user to user",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIwODUxNTY4MTE5NzgiLCJpYXQiOjE2OTk4ODU4MzAsImV4cCI6MTY5OTg5MzgzMH0.5X_LMAti4_S5G0kt33VH7TPf7GH2VYy7SSJNO5ya9poQMZ81CrSV9eU3iXFHg7ViMqLL0_83GYIE1GR2MrFtIg",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"targetMobileNumber\": \"085156811971\",\r\n    \"receiver\": \"Juleha\",\r\n    \"amount\": 10000,\r\n    \"description\": \"Uang kaget\",\r\n    \"transactionType\": \"Kasian butuh duit\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/wallet/transfertouser",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"wallet",
+								"transfertouser"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Wallet Akun 2",
+			"item": [
+				{
+					"name": "Get Wallet By Id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIwODUxNTY4MTE5NzkiLCJpYXQiOjE2OTk3MDY3NjgsImV4cCI6MTY5OTcxNDc2OH0.cMoxINfmlPPHPq9xH8hkuLp01_HK99pWrKOh9TqZS7hFotfrIJQzRYj4NqslEqyu3xUiqIMS6yvMVUUu11mN5Q",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/wallet/085156811979",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"wallet",
+								"085156811979"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Transfer Money From Wallet To Beneficiary M Banking",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIwODUxNTY4MTE5NzkiLCJpYXQiOjE2OTk4NTQ4MTgsImV4cCI6MTY5OTg2MjgxOH0.Glk_qleo-kKD98sAczs7TFSp2lRZ1kwv8eS_pMaraRfntXEfzkCHzbZhSCn6m73OpBGTQncPFHlYoRkSxOEOxg",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"beneficiaryMobileNumber\": \"0123456789\",\r\n    \"description\" : \"Uang kaget\",\r\n    \"amount\": 5000,\r\n    \"receiver\": \"Udin 1\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/wallet/transfertobeneficiary",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"wallet",
+								"transfertobeneficiary"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "(500) Transfer Money From Wallet To Beneficiary M Banking Not Registered",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIwODUxNTY4MTE5NzkiLCJpYXQiOjE2OTk4MzUxNDcsImV4cCI6MTY5OTg0MzE0N30.CE_PfUx6E7w0EqaIdnZou5kFEQeqWVXw6bnqjXcaJjdhOp9CE20SLRxAHMOWTsbrcOxgqrP0VzLNTrSFsFToWQ",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"beneficiaryMobileNumber\": \"089756477423435435\",\r\n    \"description\" : \"Uang kaget\",\r\n    \"amount\": 5000,\r\n    \"receiver\": \"Udin 1\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/wallet/transfertobeneficiary",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"wallet",
+								"transfertobeneficiary"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Transfer Money from user to user",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIwODUxNTY4MTE5NzkiLCJpYXQiOjE2OTk4NjY1MjMsImV4cCI6MTY5OTg3NDUyM30.PMy6qYVI-uBh-aJqZznG18Jg4uoiyzxid61toqteIlfJiQsBSqcsjM7IvIyvdaXc6BI_3W5pDVQpBgkK3rtrmw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"targetMobileNumber\": \"085156811971\",\r\n    \"receiver\": \"Juleha\",\r\n    \"amount\": 200,\r\n    \"description\": \"Uang kaget\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/wallet/transfertouser",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"wallet",
+								"transfertouser"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Transaction",
+			"item": [
+				{
+					"name": "Get All Transation for admin",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIwODUxNTY4MTE5NzkiLCJpYXQiOjE2OTk3MDU4NTQsImV4cCI6MTY5OTcxMzg1NH0.O_dRmMzRyC4XHwH8B7mF3gL31V4mQbufyIj8W8-rsi9lvvUKN8bPyG6q5Keoqhgor6AbWb7o1f3spqVn2SXtaw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "text"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/transaction/viewall",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"transaction",
+								"viewall"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Transaction By Wallet Id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIwODUxNTY4MTE5NzkiLCJpYXQiOjE2OTk4NTQ4MTgsImV4cCI6MTY5OTg2MjgxOH0.Glk_qleo-kKD98sAczs7TFSp2lRZ1kwv8eS_pMaraRfntXEfzkCHzbZhSCn6m73OpBGTQncPFHlYoRkSxOEOxg",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/transaction/0851568119779",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"transaction",
+								"0851568119779"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Transaction Akun 2",
+			"item": [
+				{
+					"name": "Get All Transation for admin",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIwODUxNTY4MTE5NzkiLCJpYXQiOjE2OTk4NTI5NTIsImV4cCI6MTY5OTg2MDk1Mn0.xWJnM4fqmI5OJVLTKmAFY6a0sJJc1-AhihKXC9W_biHjwA8mfG1z0dJKuEZCI9U0m25DkHUkagx--T8Hp8ekcw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "text"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/transaction/viewall",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"transaction",
+								"viewall"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Transaction By Wallet Id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIwODUxNTY4MTE5NzkiLCJpYXQiOjE2OTk4NTQ4MTgsImV4cCI6MTY5OTg2MjgxOH0.Glk_qleo-kKD98sAczs7TFSp2lRZ1kwv8eS_pMaraRfntXEfzkCHzbZhSCn6m73OpBGTQncPFHlYoRkSxOEOxg",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/transaction/0851568119779",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"transaction",
+								"0851568119779"
+							],
+							"query": [
+								{
+									"key": "wallet",
+									"value": null,
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Bill payment",
+			"item": [
+				{
+					"name": "Payment",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIwODUxNTY4MTE5NzEiLCJpYXQiOjE2OTk4MzkyOTYsImV4cCI6MTY5OTg0NzI5Nn0.jBWKYghoD2ROP7yFgQ_eexOOnoop0Bh-o5KG-yfj05trbp97Z5naQnb6_2U3SfD-63MQmzDrcuKHcMR5fgWBiA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"consumerNo\": \"099887877\",\r\n    \"amount\": \"30000\",\r\n    \"description\": \"cek lagi kang\",\r\n    \"receiver\": \"Tokopedia\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/bill/payment",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"bill",
+								"payment"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "(500) Payment gada duit",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIwODUxNTY4MTE5NzEiLCJpYXQiOjE2OTk4MzkyOTYsImV4cCI6MTY5OTg0NzI5Nn0.jBWKYghoD2ROP7yFgQ_eexOOnoop0Bh-o5KG-yfj05trbp97Z5naQnb6_2U3SfD-63MQmzDrcuKHcMR5fgWBiA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"consumerNo\": \"099887877\",\r\n    \"amount\": \"50000\",\r\n    \"description\": \"cek lagi kang\",\r\n    \"receiver\": \"Tokopedia\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/bill/payment",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"bill",
+								"payment"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "View All Bill History",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIwODUxNTY4MTE5NzkiLCJpYXQiOjE2OTk4Mzk5NzUsImV4cCI6MTY5OTg0Nzk3NX0.4qsnBKyMCXuHMt9Gm2HmZvVSeKgZ8OcJr6r01OSXILEBkp6jj14fzR23o5ax93yFQiZKxQhfQCjA-4IMdxzb8w",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/bill/view/allpayments",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"bill",
+								"view",
+								"allpayments"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Bill payment Akun 2",
+			"item": [
+				{
+					"name": "Payment akun 2",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIwODUxNTY4MTE5NzEiLCJpYXQiOjE2OTk4MzkyOTYsImV4cCI6MTY5OTg0NzI5Nn0.jBWKYghoD2ROP7yFgQ_eexOOnoop0Bh-o5KG-yfj05trbp97Z5naQnb6_2U3SfD-63MQmzDrcuKHcMR5fgWBiA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"consumerNo\": \"0998477384\",\r\n    \"amount\": \"2000\",\r\n    \"description\": \"udah di transfer kang\",\r\n    \"receiver\": \"Toko Shopee\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/bill/payment",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"bill",
+								"payment"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Payment akun 2 gada duit",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIwODUxNTY4MTE5NzEiLCJpYXQiOjE2OTk4MzkyOTYsImV4cCI6MTY5OTg0NzI5Nn0.jBWKYghoD2ROP7yFgQ_eexOOnoop0Bh-o5KG-yfj05trbp97Z5naQnb6_2U3SfD-63MQmzDrcuKHcMR5fgWBiA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"consumerNo\": \"0998477384\",\r\n    \"amount\": \"300000\",\r\n    \"description\": \"udah di transfer kang\",\r\n    \"receiver\": \"Toko Shopee\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/bill/payment",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"bill",
+								"payment"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "View All Payment History akun 2",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/bill/view/allpayments",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"bill",
+								"view",
+								"allpayments"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
