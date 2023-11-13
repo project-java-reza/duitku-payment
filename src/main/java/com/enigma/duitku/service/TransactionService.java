@@ -13,7 +13,8 @@ public interface TransactionService {
 
     TransactionResponse addTransaction(TransactionRequest request, String token) throws UserException;
 
-    Transaction viewTransactionId(String id, String token) throws UserException;
+    Transaction viewTransactionId(String walletId, String token) throws UserException;
 
-    Page<TransactionResponse> viewAllTransaction(Integer page, Integer size, String token) throws UserException;
+    // Admin
+    Page<TransactionResponse> viewAllTransaction(Integer page, Integer size) throws UserException;
 }

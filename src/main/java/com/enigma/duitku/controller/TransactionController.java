@@ -29,12 +29,12 @@ public class TransactionController {
     private final AuthTokenFilter authTokenFilter;
 
     @GetMapping("/view/{id}")
-    public ResponseEntity<?> viewTransaction(@PathVariable String id, HttpServletRequest httpServletRequest) throws UserException{
+    public ResponseEntity<?> viewTransaction(@RequestParam  String walletId, HttpServletRequest httpServletRequest) throws UserException{
         try {
             String jwtToken = authTokenFilter.parseJwt(httpServletRequest);
             return ResponseEntity.status(HttpStatus.OK)
                     .body(CommonResponse.builder()
-                            .data(transactionService.viewTransactionId(id, jwtToken))
+                            .data(transactionService.viewTransactionId(walletId, jwtToken))
                             .build());
         }catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
@@ -49,12 +49,10 @@ public class TransactionController {
     @GetMapping("/viewall")
     public ResponseEntity<?> viewAllTransaction(
             @RequestParam(name= "page", required = false, defaultValue = "0")Integer page,
-            @RequestParam(name= "size", required = false, defaultValue = "5")Integer size,
-            HttpServletRequest httpServletRequest
+            @RequestParam(name= "size", required = false, defaultValue = "5")Integer size
     ) throws UserException {
         try {
-            String jwtToken = authTokenFilter.parseJwt(httpServletRequest);
-            Page<TransactionResponse> transactionResponses = transactionService.viewAllTransaction(page, size, jwtToken);
+            Page<TransactionResponse> transactionResponses = transactionService.viewAllTransaction(page, size);
             PagingResponse pagingResponse = PagingResponse.builder()
                     .currentPage(page)
                     .totalPage(transactionResponses.getTotalPages())

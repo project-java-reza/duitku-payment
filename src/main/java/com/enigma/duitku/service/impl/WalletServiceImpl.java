@@ -96,6 +96,7 @@ public class WalletServiceImpl implements WalletService {
                                     .receiver(transaction.getReceiver())
                                     .transactionType(transaction.getTransactionType())
                                     .description(transaction.getDescription())
+                                    .balance(optionalWallet.get().getBalance())
                                     .build();
                         } else {
                             throw new TransactionException("Transaction Failed");

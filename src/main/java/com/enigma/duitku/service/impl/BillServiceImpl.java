@@ -52,6 +52,7 @@ public class BillServiceImpl implements BillService {
                 transaction.setBillType(bill.getBillType());
                 transaction.setTransactionType("Bill Payment");
                 transaction.setAmount(bill.getAmount());
+                transaction.setDescription(bill.getDescription());
                 transactionService.addTransaction(transaction, token);
 
                 if(transaction != null) {
@@ -60,8 +61,10 @@ public class BillServiceImpl implements BillService {
                     wallet.setListofBills(listOfBills);
                     walletRepository.saveAndFlush(wallet);
                     return TransactionResponse.builder()
-                            .amount(bill.getAmount())
-                            .transactionType(bill.getBillType())
+                            .amount(transaction.getAmount())
+                            .transactionType(transaction.getBillType())
+                            .description(transaction.getDescription())
+                            .receiver(transaction.getReceiver())
                             .build();
                 } else {
                     throw new TransactionException("Transaction failed!");

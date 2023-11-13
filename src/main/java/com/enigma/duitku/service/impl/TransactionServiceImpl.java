@@ -21,6 +21,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -92,40 +93,35 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
-    public Transaction viewTransactionId(String id, String token)throws UserException {
+    public Transaction viewTransactionId(String walletId, String token)throws UserException {
         String loggedInUserId = jwtUtils.extractUserId(token);
         User user = userService.getById(loggedInUserId);
 
         if(user != null) {
-            Optional<Transaction> optionalTransaction = transactionRepository.findById(id);
+            Optional<Transaction> optionalTransaction = Optional.ofNullable(transactionRepository.findByWalletId(walletId));
 
             if(optionalTransaction.isPresent()) {
                 return  optionalTransaction.get();
             } else {
-                throw new TransactionException("No Transaction Found With This Transaction Id: " + id);
+                throw new TransactionException("No Transaction Found With This Transaction Id: " + walletId);
             }
         } else {
             throw new UserException("Plese Login In ");
         }
     }
 
+    // Admin
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Override
-    public Page<TransactionResponse> viewAllTransaction(Integer page, Integer size, String token) throws UserException{
+    public Page<TransactionResponse> viewAllTransaction(Integer page, Integer size ) throws UserException{
 
-        String loggedInUserId = jwtUtils.extractUserId(token);
-        User user = userService.getById(loggedInUserId);
-
-        if(user != null) {
             Pageable pageable = PageRequest.of(page, size);
             Page<Transaction> transactions = transactionRepository.findAll(pageable);
             List<TransactionResponse> transactionResponses = new ArrayList<>();
             for (Transaction transaction : transactions.getContent()) {
-                TransactionResponse transactionResponse = new TransactionResponse(transaction.getId(), transaction.getDescription(), transaction.getType(), transaction.getAmount(), transaction.getWalletId());
+                TransactionResponse transactionResponse = new TransactionResponse(transaction.getId(), transaction.getDescription(), transaction.getType(), transaction.getAmount(), transaction.getWalletId(), null);
                 transactionResponses.add(transactionResponse);
             }
             return new PageImpl<>(transactionResponses, pageable, transactions.getTotalElements());
-        } else {
-            throw new UserException("Plese Login In ");
-        }
     }
 }

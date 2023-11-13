@@ -2,6 +2,7 @@ package com.enigma.duitku.service.impl;
 
 import com.enigma.duitku.entity.Address;
 import com.enigma.duitku.entity.User;
+import com.enigma.duitku.exception.ConflictException;
 import com.enigma.duitku.exception.UserException;
 import com.enigma.duitku.model.request.AddressRequest;
 import com.enigma.duitku.model.response.AddressResponse;
@@ -41,7 +42,7 @@ public class AddressServiceImpl implements AddressService {
         if(user != null) {
 
             if (user.getAddress() != null) {
-                throw new UserException("User already has an address");
+                throw new ConflictException("User already has an address");
             }
 
             Address address = new Address();

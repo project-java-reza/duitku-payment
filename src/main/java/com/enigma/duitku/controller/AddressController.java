@@ -48,10 +48,10 @@ public class AddressController {
             }
 
         } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+            return ResponseEntity.status(HttpStatus.CONFLICT)
                     .body(CommonResponse.<BankAccountResponse>builder()
-                            .statusCode(HttpStatus.NOT_FOUND.value())
-                            .message("Failed add address" + e.getMessage())
+                            .statusCode(HttpStatus.CONFLICT.value())
+                            .message("Failed add address " + e.getMessage())
                             .build());
         }
     }

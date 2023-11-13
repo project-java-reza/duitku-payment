@@ -42,9 +42,9 @@ public class BeneficiaryController {
                 BeneficiaryResponse beneficiaryResponse = beneficiaryService.addBeneficiary(request, jwtToken);
 
                 if(beneficiaryResponse.getErrors() != null) {
-                    return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    return ResponseEntity.status(HttpStatus.CONFLICT)
                             .body(CommonResponse.builder()
-                                    .statusCode(HttpStatus.BAD_REQUEST.value())
+                                    .statusCode(HttpStatus.CONFLICT.value())
                                     .data(beneficiaryResponse)
                                     .message("Cannot add a new account because it is already registered")
                                     .build());
