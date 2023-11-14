@@ -33,4 +33,7 @@ public class Admin {
     @OneToOne(cascade = CascadeType.ALL)
     private Wallet wallet;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    private Address address;
+
 }

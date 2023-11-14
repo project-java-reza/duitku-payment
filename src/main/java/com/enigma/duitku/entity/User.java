@@ -34,4 +34,7 @@ public class User {
 
     @OneToOne(cascade = CascadeType.ALL)
     private Address address;
+
+    @OneToOne(mappedBy = "bank_account", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private BankAccount bankAccount;
 }

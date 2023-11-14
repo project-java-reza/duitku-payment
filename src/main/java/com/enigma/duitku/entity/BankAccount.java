@@ -2,10 +2,7 @@ package com.enigma.duitku.entity;
 
 import lombok.*;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Getter
@@ -27,5 +24,9 @@ public class BankAccount {
         private String bankName;
 
         private Double balance;
+
+        @OneToOne(fetch = FetchType.LAZY)
+        @JoinColumn(name = "mobile_number") // Assuming "user_id" is the foreign key column
+        private User user;
 
 }
