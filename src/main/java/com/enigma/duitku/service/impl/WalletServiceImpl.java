@@ -4,6 +4,7 @@ import com.enigma.duitku.entity.*;
 import com.enigma.duitku.exception.*;
 import com.enigma.duitku.model.request.TransactionRequest;
 import com.enigma.duitku.model.response.TransactionResponse;
+import com.enigma.duitku.repository.AdminRepository;
 import com.enigma.duitku.repository.BankAccountRepository;
 import com.enigma.duitku.repository.UserRepository;
 import com.enigma.duitku.repository.WalletRepository;
@@ -42,6 +43,8 @@ public class WalletServiceImpl implements WalletService {
     private final JwtUtils jwtUtils;
 
     private final BankAccountRepository bankAccountRepository;
+
+    private final AdminRepository adminRepository;
 
     @Override
     @Transactional(rollbackOn = Exception.class)
@@ -138,10 +141,11 @@ public class WalletServiceImpl implements WalletService {
             if (validateUser != null) {
                 // TODO 3 Getting Optional User by ID
                 Optional<User> optionalUser = userRepository.findById(validateUser.getMobileNumber());
+
                 log.info("ID Login " + validateUser.getWallet().getId());
 
                 // TODO 4 Checking if Optional User is present
-                if (optionalUser != null) {
+                if (optionalUser.isPresent()) {
 
                     // TODO 5 Getting Optional Target User by Mobile Number
                     Optional<User> targetUser = userRepository.findById(request.getTargetMobileNumber());
@@ -150,6 +154,7 @@ public class WalletServiceImpl implements WalletService {
                     // TODO 6 Initializing Balance Variables
                     Double availableBalance = null;
                     Double targetAvailableBalance;
+                    Double targetWalletAdmin;
 
                     // TODO 7 Checking if Target User is present
                     if (targetUser != null) {
@@ -158,6 +163,9 @@ public class WalletServiceImpl implements WalletService {
                         Optional<User> user = optionalUser;
                         Wallet wallet = user.get().getWallet();
                         Wallet targetWallet = targetUser.get().getWallet();
+
+                        String adminMobileNumber = "085156811979";
+                        Optional<Wallet> admin = walletRepository.findById(adminMobileNumber);
 
                         // TODO 8 Checking for Self-Transfer and Returning Error:
                         if (validateUser.getMobileNumber().equals(request.getTargetMobileNumber())) {
@@ -169,6 +177,7 @@ public class WalletServiceImpl implements WalletService {
                         // TODO 9 Getting Balances and Target User's Transaction List
                         availableBalance = wallet.getBalance();
                         targetAvailableBalance = targetWallet.getBalance();
+
                         List<Transaction> targetListOfTransactions = targetWallet.getListOfTransactions();
 
                         // TODO 10 Checking if Available Balance is Sufficient
@@ -191,7 +200,16 @@ public class WalletServiceImpl implements WalletService {
 
                             // TODO 13 Updating Balances and Saving Wallets
                             targetWallet.setBalance(targetAvailableBalance + request.getAmount());
-                            wallet.setBalance(availableBalance - request.getAmount());
+
+                            // TODO 2 Define admin fee rate
+                            double adminFeeRate = 0.02;
+
+                            // TODO 3 Calculate admin fee rate
+                            double adminFee = request.getAmount() * adminFeeRate;
+
+                            double amountAfterAdminFee = request.getAmount() - adminFee;
+
+                            wallet.setBalance(availableBalance - request.getAmount() - amountAfterAdminFee);
 
                             walletRepository.saveAndFlush(wallet);
                             walletRepository.saveAndFlush(targetWallet);
