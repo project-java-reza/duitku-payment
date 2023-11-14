@@ -9,6 +9,6 @@ import com.enigma.duitku.model.response.RegisterResponse;
 public interface AuthService {
 
     RegisterResponse registerUsers(AuthRequest authRequest) throws UserException;
-    RegisterResponse registerAdmin(AuthRequest authRequest);
+    RegisterResponse registerAdmin(AuthRequest authRequest) throws UserException;
     LoginResponse login(AuthRequest request);
 }

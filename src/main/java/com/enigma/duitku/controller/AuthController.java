@@ -34,7 +34,7 @@ public class AuthController {
     }
 
     @PostMapping(path = "/register/admin")
-    public ResponseEntity<?> registerAdmin(@RequestBody AuthRequest authRequest) {
+    public ResponseEntity<?> registerAdmin(@RequestBody AuthRequest authRequest) throws UserException{
         RegisterResponse register = authService.registerAdmin(authRequest);
         CommonResponse<Object> commonResponse = CommonResponse.builder()
                 .statusCode(HttpStatus.CREATED.value())

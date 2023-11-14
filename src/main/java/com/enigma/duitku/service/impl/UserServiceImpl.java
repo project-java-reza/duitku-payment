@@ -66,11 +66,30 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Admin create(Admin admin) {
-        try {
-            return adminRepository.save(admin);
-        } catch (DataIntegrityViolationException exception) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "email already used");
+    public Admin create(Admin admin) throws UserException {
+        // TODO 1 Getting Optional Admin by Mobile Number
+        Optional<Admin> findUser = adminRepository.findById(admin.getMobileNumber());
+        // TODO 2 Checking if User with the Mobile Number already exists
+        if(findUser.isEmpty()) {
+
+            // TODO 3 Creating a new Wallet for the User
+            Wallet wallet = new Wallet();
+            wallet.setBalance(0.0);
+            wallet.setId(admin.getMobileNumber());
+            admin.setWallet(wallet);
+
+            // TODO 4 Saving and Flushing the User to the Repository
+            Admin addAdmin=adminRepository.saveAndFlush(admin);
+
+            // TODO 5 Checking if User is successfully added
+            if(addAdmin!=null) {
+                return addAdmin;
+            } else {
+                throw new UserException("Sorry, sign up unsuccessfull!");
+            }
+
+        } else {
+            throw new UserException("Admin already Registered With The Mobile Number: " +  admin.getMobileNumber());
         }
     }
 

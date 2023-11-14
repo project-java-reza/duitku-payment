@@ -11,7 +11,7 @@ import java.util.List;
 public interface UserService {
 
     User create(User  user) throws UserException;
-    Admin create (Admin admin);
+    Admin create (Admin admin) throws UserException;
     User getById(String id);
     Page<UserResponse> getAll(Integer page, Integer size);
     User update(User user);

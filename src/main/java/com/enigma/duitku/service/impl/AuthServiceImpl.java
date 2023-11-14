@@ -79,7 +79,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     @Transactional(rollbackOn = Exception.class)
-    public RegisterResponse registerAdmin(AuthRequest authRequest) {
+    public RegisterResponse registerAdmin(AuthRequest authRequest)throws UserException {
         try {
             Role role = roleService.getOrSave(ERole.ROLE_ADMIN);
             UserCredential credential= UserCredential.builder()
@@ -96,8 +96,12 @@ public class AuthServiceImpl implements AuthService {
                     .build();
             userService.create(admin);
 
+            Wallet wallet = new Wallet();
+            wallet.setBalance(0.0);
+
             return RegisterResponse.builder()
                     .mobileNumber(credential.getMobileNumber())
+                    .balance(wallet.getBalance())
                     .build();
 
         } catch (DataIntegrityViolationException exception) {
