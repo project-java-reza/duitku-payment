@@ -104,15 +104,11 @@ public class BankAccountController {
     @GetMapping("/viewall")
     public ResponseEntity<?> viewAllBankAccount(
             @RequestParam(name = "page", required = false, defaultValue = "0") Integer page,
-            @RequestParam(name = "size", required = false, defaultValue = "5") Integer size,
-            HttpServletRequest httpServletRequest
+            @RequestParam(name = "size", required = false, defaultValue = "5") Integer size
     ) throws UserException{
 
         try {
-            String jwtToken = authTokenFilter.parseJwt(httpServletRequest);
-
-            if(jwtToken != null) {
-                Page<BankAccountResponse> bankAccountResponses = bankAccountService.getAllBankAccount(page, size, jwtToken);
+                Page<BankAccountResponse> bankAccountResponses = bankAccountService.getAllBankAccount(page, size);
                 PagingResponse pagingResponse = PagingResponse.builder()
                         .currentPage(page)
                         .totalPage(bankAccountResponses.getTotalPages())
@@ -126,12 +122,6 @@ public class BankAccountController {
                                 .data(bankAccountResponses.getContent())
                                 .paging(pagingResponse)
                                 .build());
-            } else {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                        .body(CommonResponse.builder()
-                                .statusCode(HttpStatus.UNAUTHORIZED.value())
-                                .build());
-            }
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(CommonResponse.<BankAccountResponse>builder()

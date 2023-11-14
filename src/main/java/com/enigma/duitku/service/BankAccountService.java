@@ -14,5 +14,5 @@ public interface BankAccountService {
     BankAccount getById(String id, String token) throws UserException;
     BankAccountResponse topUpWallet(BankAccountRequest request, String token) throws UserException, TransactionException;
 
-    Page<BankAccountResponse> getAllBankAccount(Integer page, Integer size, String token) throws UserException;
+    Page<BankAccountResponse> getAllBankAccount(Integer page, Integer size) throws UserException;
 }

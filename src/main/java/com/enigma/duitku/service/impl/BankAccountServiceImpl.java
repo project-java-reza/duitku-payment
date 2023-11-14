@@ -158,12 +158,8 @@ public class BankAccountServiceImpl implements BankAccountService {
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Override
-    public Page<BankAccountResponse> getAllBankAccount(Integer page, Integer size, String token) throws UserException{
+    public Page<BankAccountResponse> getAllBankAccount(Integer page, Integer size) throws UserException{
 
-        String loggedInUserId = jwtUtils.extractUserId(token);
-        User user = userService.getById(loggedInUserId);
-
-        if(user != null) {
             Pageable pageable = PageRequest.of(page, size);
             Page<BankAccount> bankAccounts = bankAccountRepository.findAll(pageable);
             List<BankAccountResponse> bankAccountResponses = new ArrayList<>();
@@ -177,8 +173,5 @@ public class BankAccountServiceImpl implements BankAccountService {
                 bankAccountResponses.add(bankAccountResponse);
             }
             return new PageImpl<>(bankAccountResponses, pageable, bankAccounts.getTotalElements());
-        }else {
-            throw new UserException("Please Login In!");
-        }
     }
 }
