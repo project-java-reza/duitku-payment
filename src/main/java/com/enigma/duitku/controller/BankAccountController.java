@@ -1,5 +1,6 @@
 package com.enigma.duitku.controller;
 
+import com.enigma.duitku.entity.Address;
 import com.enigma.duitku.entity.BankAccount;
 import com.enigma.duitku.entity.User;
 import com.enigma.duitku.exception.UserException;
@@ -66,30 +67,7 @@ public class BankAccountController {
                             .message("Profile id not found" + e.getMessage())
                             .build());
         }
-
-
    }
-
-    @DeleteMapping("/delete")
-    public ResponseEntity<?> deleteBankAccount(@RequestParam String id, HttpServletRequest httpServletRequest) throws UserException{
-        try {
-            String jwtToken = authTokenFilter.parseJwt(httpServletRequest);
-            bankAccountService.removeAccountBank(id, jwtToken);
-
-            BankAccount bankAccount = new BankAccount();
-            return ResponseEntity.status(HttpStatus.OK)
-                    .body(CommonResponse.builder()
-                            .statusCode(HttpStatus.OK.value())
-                            .message(String.valueOf("Sucessfully delete account bank"))
-                            .build());
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(CommonResponse.<BankAccountResponse>builder()
-                            .statusCode(HttpStatus.NOT_FOUND.value())
-                            .message("Delete Failed " + e.getMessage())
-                            .build());
-        }
-    }
 
     @PostMapping("/topup")
     public ResponseEntity<?> topUpWallet(@RequestBody BankAccountRequest request, HttpServletRequest httpServletRequest) throws UserException, TransactionException {

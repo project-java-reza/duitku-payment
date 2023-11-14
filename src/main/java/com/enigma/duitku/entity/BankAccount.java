@@ -20,12 +20,12 @@ public class BankAccount {
         @Column(name="wallet_id")
         private String id;
 
-        @Column(name="account_no", nullable = false, length = 20, unique = true)
+        @Column(name="account_no", length = 20, unique = true)
         private String accountNo;
 
-        @Column(name = "bank_name", nullable = false, length = 10)
+        @Column(name = "bank_name", length = 10)
         private String bankName;
 
-        @Column(nullable = false)
         private Double balance;
+
 }

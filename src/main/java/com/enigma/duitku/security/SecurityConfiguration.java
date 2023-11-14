@@ -47,6 +47,7 @@ public class SecurityConfiguration {
                 .antMatchers(HttpMethod.GET, "/api/auth").hasRole("ADMIN")
                 .antMatchers(HttpMethod.GET, "/api/address/allAddresses").hasRole("ADMIN")
                 .antMatchers(HttpMethod.GET, "/api/transaction/viewall").hasRole("ADMIN")
+                .antMatchers(HttpMethod.GET, "/api/bankaccount/viewall").hasRole("ADMIN")
                 .anyRequest().authenticated()
                 .and().addFilterBefore(authTokenFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();

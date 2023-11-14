@@ -1,16 +1,11 @@
 package com.enigma.duitku.service.impl;
 
-import com.enigma.duitku.entity.BankAccount;
-import com.enigma.duitku.entity.Transaction;
-import com.enigma.duitku.entity.User;
-import com.enigma.duitku.entity.Wallet;
-import com.enigma.duitku.exception.ConflictException;
+import com.enigma.duitku.entity.*;
 import com.enigma.duitku.exception.TransferException;
 import com.enigma.duitku.exception.UserException;
 import com.enigma.duitku.model.request.BankAccountRequest;
 import com.enigma.duitku.model.request.TransactionRequest;
 import com.enigma.duitku.model.response.BankAccountResponse;
-import com.enigma.duitku.model.response.TransactionResponse;
 import com.enigma.duitku.repository.BankAccountRepository;
 import com.enigma.duitku.repository.TransactionRepository;
 import com.enigma.duitku.repository.UserRepository;
@@ -27,10 +22,10 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import javax.swing.text.html.Option;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
@@ -93,32 +88,6 @@ public class BankAccountServiceImpl implements BankAccountService {
             throw new UserException("Plese Login In!");
         }
 
-    }
-
-    @Override
-    public BankAccountResponse removeAccountBank(String id, String token) throws UserException {
-
-        String loggedInUserId = jwtUtils.extractUserId(token);
-        User userValidate = userService.getById(loggedInUserId);
-
-        if(userValidate != null) {
-            BankAccount bankAccount = bankAccountRepository.findById(id).orElse(null);
-
-            if(bankAccount!=null) {
-                bankAccountRepository.delete(bankAccount);
-
-                return BankAccountResponse.builder()
-                        .bankName(bankAccount.getBankName())
-                        .build();
-            } else {
-                return BankAccountResponse.builder()
-                        .errors("Failed to delete account bank")
-                        .build();
-            }
-
-        } else {
-            throw new UserException("Plese Login In!");
-        }
     }
 
     @Override
@@ -187,8 +156,7 @@ public class BankAccountServiceImpl implements BankAccountService {
         }
     }
 
-
-
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Override
     public Page<BankAccountResponse> getAllBankAccount(Integer page, Integer size, String token) throws UserException{
 
