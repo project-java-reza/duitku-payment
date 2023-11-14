@@ -6,6 +6,7 @@ import com.enigma.duitku.exception.UserException;
 import com.enigma.duitku.model.request.BankAccountRequest;
 import com.enigma.duitku.model.request.TransactionRequest;
 import com.enigma.duitku.model.response.BankAccountResponse;
+import com.enigma.duitku.model.response.TransactionResponse;
 import com.enigma.duitku.repository.BankAccountRepository;
 import com.enigma.duitku.repository.TransactionRepository;
 import com.enigma.duitku.repository.UserRepository;
@@ -112,8 +113,8 @@ public class BankAccountServiceImpl implements BankAccountService {
                 // TODO 5 Checking if Bank Account Balance is Sufficient
                 if (bankAccount.getBalance() >= amount){
 
-                    if (amount <= 0) {
-                        throw new TransferException("Invalid amount: " + amount);
+                    if (amount < 5.000) {
+                        throw new TransferException("Minimum balance requirement not met. Minimum amount: 5,000" );
                     }
 
                     // TODO 6 Updating Bank Account and User Wallet Balances
