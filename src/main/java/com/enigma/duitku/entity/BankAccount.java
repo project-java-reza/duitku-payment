@@ -26,7 +26,7 @@ public class BankAccount {
         private Double balance;
 
         @OneToOne(fetch = FetchType.LAZY)
-        @JoinColumn(name = "mobile_number") // Assuming "user_id" is the foreign key column
+        @JoinColumn(name = "mobile_number")
         private User user;
 
 }

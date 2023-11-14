@@ -63,6 +63,7 @@ public class BankAccountServiceImpl implements BankAccountService {
             bankAccount.setAccountNo(request.getAccountNo());
             bankAccount.setBalance(request.getBalance());
             bankAccount.setBankName(request.getBankName());
+            bankAccount.setUser(user);
 
             bankAccountRepository.saveAndFlush(bankAccount);
 
