@@ -41,29 +41,49 @@ public class BillServiceImpl implements BillService {
     @Override
     @Transactional(rollbackOn = Exception.class)
     public TransactionResponse billPayment(Bill bill, String token) throws WalletException, UserException {
+
+        // TODO 1 Extracting User ID from JWT Token & Validate User
         String loggedInUserId = jwtUtils.extractUserId(token);
         User user = userService.getById(loggedInUserId);
 
+        // TODO 2 Checking if User is not null
         if(user != null) {
+
+            // TODO 3 Getting User's Wallet and Available Balance
             Wallet wallet = user.getWallet();
             Double availableBalane = wallet.getBalance();
+
+            // TODO 4 Getting List of Bills from Wallet
             List<Bill> listOfBills = wallet.getListofBills();
+
+            // TODO 5 Checking if Available Balance is Sufficient
             if(availableBalane >= bill.getAmount()) {
+
+                // TODO 6 Creating Transaction Request
                 TransactionRequest transaction = new TransactionRequest();
                 transaction.setReceiver(bill.getReceiver());
                 transaction.setBillType(bill.getBillType());
                 transaction.setTransactionType("Bill Payment");
                 transaction.setAmount(bill.getAmount());
                 transaction.setDescription(bill.getDescription());
+
+                // TODO 7 Setting Bill Type, Payment DateTime, and Adding Transaction
                 bill.setBillType("Bill Payment");
                 bill.setPaymentDateTime(LocalDateTime.now());
                 transactionService.addTransaction(transaction, token);
 
+                // TODO 8 Checking if Transaction is not null
                 if(transaction != null) {
+
+                    // TODO 9 Updating List of Bills and Wallet Balance
                     listOfBills.add(bill);
                     wallet.setBalance(availableBalane - bill.getAmount());
                     wallet.setListofBills(listOfBills);
+
+                    // TODO 10 Saving and Flushing Wallet
                     walletRepository.saveAndFlush(wallet);
+
+                    // TODO 11 Building and Returning Transaction Response
                     return TransactionResponse.builder()
                             .amount(transaction.getAmount())
                             .transactionType(bill.getBillType())
@@ -71,13 +91,16 @@ public class BillServiceImpl implements BillService {
                             .receiver(transaction.getReceiver())
                             .build();
                 } else {
+                    // TODO 12 Handling Transaction Failure Exception
                     throw new TransactionException("Transaction failed!");
                 }
 
             } else {
+                // TODO 13 Handling Insufficient Funds Exception
                 throw new WalletException("Insufficient Funds ! Available Wallet Balance : " + availableBalane);
             }
         } else {
+            // TODO 14 Handling User Not Found Exception
             throw new UserException("Please login in");
         }
     }

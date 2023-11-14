@@ -34,16 +34,22 @@ public class UserServiceImpl implements UserService {
     @Override
     public User create(User user) throws UserException {
         try {
+            // TODO 1 Getting Optional User by Mobile Number
             Optional<User> findUser = userRepository.findById(user.getMobileNumber());
 
+            // TODO 2 Checking if User with the Mobile Number already exists
             if(findUser.isEmpty()) {
+
+                // TODO 3 Creating a new Wallet for the User
                 Wallet wallet = new Wallet();
                 wallet.setBalance(0.0);
                 wallet.setId(user.getMobileNumber());
                 user.setWallet(wallet);
 
+                // TODO 4 Saving and Flushing the User to the Repository
                 User addUser=userRepository.saveAndFlush(user);
 
+                // TODO 5 Checking if User is successfully added
                 if(addUser !=null) {
                     return addUser;
                 } else {

@@ -125,19 +125,29 @@ public class BankAccountServiceImpl implements BankAccountService {
     public BankAccountResponse topUpWallet(BankAccountRequest request, String token) throws UserException, TransactionException {
         Optional<BankAccount> optionalBankAccount = bankAccountRepository.findById(request.getMobileNumber());
 
+        // TODO 1 Extracting User ID from JWT Token & Validate User
         String loggedInUserId = jwtUtils.extractUserId(token);
         User user = userService.getById(loggedInUserId);
 
+        // TODO 2 Checking if User is not null
         if(user != null) {
+
+            // TODO 3 Mapping Optional Bank Account to Bank Account Response
             return optionalBankAccount.map(bankAccount -> {
+
+                // TODO 4 Extracting Amount from the Request
                 double amount = request.getAmount();
 
+                // TODO 5 Checking if Bank Account Balance is Sufficient
                 if (bankAccount.getBalance() >= amount){
+
+                    // TODO 6 Updating Bank Account and User Wallet Balances
                     bankAccount.setBalance(bankAccount.getBalance() - amount);
 
                     Wallet userWallet = user.getWallet();
                     userWallet.setBalance(userWallet.getBalance() + amount);
 
+                    // TODO 7 Creating Transaction Request
                     TransactionRequest transaction = new TransactionRequest();
                     user.getMobileNumber();
                     transaction.setDescription("Wallet Top Up");
@@ -146,14 +156,17 @@ public class BankAccountServiceImpl implements BankAccountService {
                     transaction.setReceiver(request.getReceiver());
                     transaction.setAmount(request.getAmount());
 
+                    // TODO 8 Handling Transaction Service Exception
                     try {
                         transactionService.addTransaction(transaction, token);
                     } catch (UserException e) {
                         throw new RuntimeException(e);
                     }
 
+                    // TODO 9 Saving Bank Account;
                     bankAccountRepository.saveAndFlush(bankAccount);
 
+                    // TODO 10 Building and Returning Bank Account Response
                     return BankAccountResponse.builder()
                             .mobileNumber(request.getMobileNumber())
                             .bankName(bankAccount.getBankName())
@@ -161,6 +174,8 @@ public class BankAccountServiceImpl implements BankAccountService {
                             .accountNo(bankAccount.getAccountNo())
                             .build();
                 }else {
+
+                    // TODO 11 Handling Top-Up Failure
                     return BankAccountResponse.builder()
                             .errors("Top Up Failed")
                             .build();

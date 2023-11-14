@@ -48,12 +48,16 @@ public class WalletServiceImpl implements WalletService {
     public TransactionResponse transferMoneyToBeneficiary(TransactionRequest request, String token)
             throws BankAccountException, WalletException, BeneficiaryException, UserException{
 
+        // TODO 1 Extracting User ID from JWT Token & Validate User
         String loggedInUserId = jwtUtils.extractUserId(token);
         User validateUser = userService.getById(loggedInUserId);
 
+        // TODO 2 Checking if User is not null
         if (validateUser != null) {
+            // TODO 3 Getting User's Wallet
             Wallet wallet = validateUser.getWallet();
 
+            // TODO 4 Iterating through Beneficiaries to find the target Beneficiary
             List<Beneficiary> listofbeneficiaries = wallet.getListOfBeneficiaries();
             Iterator<Beneficiary> iterator = listofbeneficiaries.iterator();
 
@@ -69,13 +73,20 @@ public class WalletServiceImpl implements WalletService {
 
             log.info("Beneficiary Mobile number " + request.getBeneficiaryMobileNumber());
 
+            // TODO 5 Checking if Target Beneficiary is found
             if (targetBeneficiary != null) {
+                // TODO 6 Checking Wallet Existence
                 Optional<Wallet> optionalWallet = walletRepository.findById(validateUser.getMobileNumber());
 
+                // TODO 7 Checking if Wallet is Present
                 if (optionalWallet.isPresent()) {
+                    // TODO 8 Checking Available Balance
                     Double availableBalance = optionalWallet.get().getBalance();
 
+                    // TODO 9 Checking if Available Balance is Sufficient
                     if (availableBalance >= request.getAmount()) {
+
+                        // TODO 10 Creating Transaction Request
                         TransactionRequest transaction = new TransactionRequest();
                         targetBeneficiary.getAccountNo();
                         transaction.setDescription(request.getDescription());
@@ -85,8 +96,12 @@ public class WalletServiceImpl implements WalletService {
                         transactionService.addTransaction(transaction, token);
 
                         if (transaction != null) {
+
+                            // TODO 11 Updating Wallet Balance and Saving Transaction
                             wallet.setBalance(availableBalance - request.getAmount());
                             walletRepository.save(wallet);
+
+                            // TODO 12 Building and Returning Transaction Response
                             return TransactionResponse.builder()
                                     .amount(transaction.getAmount())
                                     .receiver(transaction.getReceiver())
@@ -115,39 +130,51 @@ public class WalletServiceImpl implements WalletService {
     public TransactionResponse transferMoneyToUser(TransactionRequest request, String token)
             throws UserException, TargetUserNotFoundException, UserNotFoundException, TransferException {
 
+            // TODO 1 Extracting User ID from JWT Token & Validate User
             String loggedInUserId = jwtUtils.extractUserId(token);
             User validateUser = userService.getById(loggedInUserId);
 
+            // TODO 2 Checking if User is not null
             if (validateUser != null) {
+                // TODO 3 Getting Optional User by ID
                 Optional<User> optionalUser = userRepository.findById(validateUser.getMobileNumber());
                 log.info("ID Login " + validateUser.getWallet().getId());
 
+                // TODO 4 Checking if Optional User is present
                 if (optionalUser != null) {
+
+                    // TODO 5 Getting Optional Target User by Mobile Number
                     Optional<User> targetUser = userRepository.findById(request.getTargetMobileNumber());
                     log.info("Mobile Number " + request.getTargetMobileNumber());
 
+                    // TODO 6 Initializing Balance Variables
                     Double availableBalance = null;
                     Double targetAvailableBalance;
+
+                    // TODO 7 Checking if Target User is present
                     if (targetUser != null) {
+
+                        // TODO 8 Getting Wallets of Source and Target Users
                         Optional<User> user = optionalUser;
                         Wallet wallet = user.get().getWallet();
                         Wallet targetWallet = targetUser.get().getWallet();
 
-                        // TODO: Extract the validation logic for self-transfer into a separate method or use a custom annotation
-
+                        // TODO 8 Checking for Self-Transfer and Returning Error:
                         if (validateUser.getMobileNumber().equals(request.getTargetMobileNumber())) {
                             return TransactionResponse.builder()
                                     .errors("Cannot transfer money to yourself")
                                     .build();
                         }
 
+                        // TODO 9 Getting Balances and Target User's Transaction List
                         availableBalance = wallet.getBalance();
                         targetAvailableBalance = targetWallet.getBalance();
                         List<Transaction> targetListOfTransactions = targetWallet.getListOfTransactions();
 
-                        // TODO: Extract the transaction processing logic into a separate method for better readability
-
+                        // TODO 10 Checking if Available Balance is Sufficient
                         if (availableBalance >= request.getAmount()) {
+
+                            // TODO 11 Creating Transaction Request and Adding Transaction
                             TransactionRequest transactionRequest = new TransactionRequest();
                             transactionRequest.setTransactionType(request.getTransactionType());
                             transactionRequest.setDescription(request.getDescription());
@@ -155,20 +182,21 @@ public class WalletServiceImpl implements WalletService {
                             transactionRequest.setReceiver(request.getReceiver());
                             transactionService.addTransaction(transactionRequest, token);
 
-                            // TODO: Consider extracting the minimum balance validation into a separate method or using a constant
-
+                            // TODO 12 Checking for Minimum Transfer Amount:
                             if (request.getAmount() < 10000) {
                                 return TransactionResponse.builder()
                                         .errors("Minimum balance requirement not met. Minimum amount: 10,000")
                                         .build();
                             }
 
+                            // TODO 13 Updating Balances and Saving Wallets
                             targetWallet.setBalance(targetAvailableBalance + request.getAmount());
                             wallet.setBalance(availableBalance - request.getAmount());
 
                             walletRepository.saveAndFlush(wallet);
                             walletRepository.saveAndFlush(targetWallet);
 
+                            // TODO 14 Building and Returning Transaction Response
                             return TransactionResponse.builder()
                                     .amount(transactionRequest.getAmount())
                                     .receiver(transactionRequest.getReceiver())
