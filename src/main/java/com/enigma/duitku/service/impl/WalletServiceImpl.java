@@ -164,26 +164,27 @@ public class WalletServiceImpl implements WalletService {
                         Wallet wallet = user.get().getWallet();
                         Wallet targetWallet = targetUser.get().getWallet();
 
+                        // TODO 9 Getting wallet admin
                         String adminMobileNumber = "085156811979";
                         Optional<Wallet> admin = walletRepository.findById(adminMobileNumber);
 
-                        // TODO 8 Checking for Self-Transfer and Returning Error:
+                        // TODO 10 Checking for Self-Transfer and Returning Error:
                         if (validateUser.getMobileNumber().equals(request.getTargetMobileNumber())) {
                             return TransactionResponse.builder()
                                     .errors("Cannot transfer money to yourself")
                                     .build();
                         }
 
-                        // TODO 9 Getting Balances and Target User's Transaction List
+                        // TODO 11 Getting Balances and Target User's Transaction List
                         availableBalance = wallet.getBalance();
                         targetAvailableBalance = targetWallet.getBalance();
 
                         List<Transaction> targetListOfTransactions = targetWallet.getListOfTransactions();
 
-                        // TODO 10 Checking if Available Balance is Sufficient
+                        // TODO 12 Checking if Available Balance is Sufficient
                         if (availableBalance >= request.getAmount()) {
 
-                            // TODO 11 Creating Transaction Request and Adding Transaction
+                            // TODO 13 Creating Transaction Request and Adding Transaction
                             TransactionRequest transactionRequest = new TransactionRequest();
                             transactionRequest.setTransactionType(request.getTransactionType());
                             transactionRequest.setDescription(request.getDescription());
@@ -191,30 +192,41 @@ public class WalletServiceImpl implements WalletService {
                             transactionRequest.setReceiver(request.getReceiver());
                             transactionService.addTransaction(transactionRequest, token);
 
-                            // TODO 12 Checking for Minimum Transfer Amount:
+                            // TODO 14 Checking for Minimum Transfer Amount:
                             if (request.getAmount() < 10000) {
                                 return TransactionResponse.builder()
                                         .errors("Minimum balance requirement not met. Minimum amount: 10,000")
                                         .build();
                             }
 
-                            // TODO 13 Updating Balances and Saving Wallets
+                            // TODO 15 Updating Balances and Saving Wallets
                             targetWallet.setBalance(targetAvailableBalance + request.getAmount());
 
-                            // TODO 2 Define admin fee rate
-                            double adminFeeRate = 0.02;
+                            // TODO 16 Define admin fee rate 2000
+                            double adminFeeRate = 0.2;
 
-                            // TODO 3 Calculate admin fee rate
+                            // TODO 17 Calculate admin fee rate
                             double adminFee = request.getAmount() * adminFeeRate;
 
-                            double amountAfterAdminFee = request.getAmount() - adminFee;
+                            // TODO 18 Getting Wallets from user admin and setBalance for admin fee latest
+                            if(admin.isPresent()) {
+                                Wallet adminWallet = admin.get();
+                                double adminBalance = adminWallet.getBalance();
+                                adminWallet.setBalance(adminFee + adminBalance);
+                                walletRepository.saveAndFlush(adminWallet);
+                            }
 
-                            wallet.setBalance(availableBalance - request.getAmount() - amountAfterAdminFee);
+                            // TODO 19 Setting wallet user aftertotal amount fee admin
+                            double amountAfterAdminFee = request.getAmount() + adminFee;
 
+                            // TODO 20 Set the latest money amount after admin fee
+                            wallet.setBalance(availableBalance - amountAfterAdminFee);
+
+                            // TODO 21 Save to database wallet and target wallet latest
                             walletRepository.saveAndFlush(wallet);
                             walletRepository.saveAndFlush(targetWallet);
 
-                            // TODO 14 Building and Returning Transaction Response
+                            // TODO 21 Building and Returning Transaction Response
                             return TransactionResponse.builder()
                                     .amount(transactionRequest.getAmount())
                                     .receiver(transactionRequest.getReceiver())
