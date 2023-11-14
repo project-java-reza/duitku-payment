@@ -86,13 +86,11 @@ public class WalletController {
                                 .build());
             }
 
-        } catch (RuntimeException | UserNotFoundException e) {
-            HttpStatus httpStatus = (e instanceof UserNotFoundException) ? HttpStatus.NOT_FOUND : HttpStatus.INTERNAL_SERVER_ERROR;
-
-            return ResponseEntity.status(httpStatus)
-                    .body(CommonResponse.builder()
-                            .statusCode(httpStatus.value())
-                            .message("Failed transfer to user: " + e.getMessage())
+        } catch (TransferException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(CommonResponse.<BankAccountResponse>builder()
+                            .statusCode(HttpStatus.NOT_FOUND.value())
+                            .message("Failed transfer to user " + e.getMessage())
                             .build());
         }
     }

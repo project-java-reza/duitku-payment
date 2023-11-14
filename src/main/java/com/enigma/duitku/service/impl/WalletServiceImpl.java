@@ -145,7 +145,7 @@ public class WalletServiceImpl implements WalletService {
 
                     // TODO 5 Getting Optional Target User by Mobile Number
                     Optional<User> targetUser = userRepository.findById(request.getTargetMobileNumber());
-                    log.info("Mobile Number " + request.getTargetMobileNumber());
+                    log.info(" Target Mobile Number " + request.getTargetMobileNumber());
 
                     // TODO 6 Initializing Balance Variables
                     Double availableBalance = null;
@@ -203,17 +203,18 @@ public class WalletServiceImpl implements WalletService {
                                     .description(transactionRequest.getDescription())
                                     .transactionType(transactionRequest.getTransactionType())
                                     .build();
+                        } else {
+                            throw new TransferException("Insufficient Funds! Available Wallet Balance: " + availableBalance);
                         }
                     } else {
-                        throw new TransferException("Insufficient Funds! Available Wallet Balance: " + availableBalance);
+                        throw new TargetUserNotFoundException("Target user not found with mobile number: " + request.getTargetMobileNumber());
                     }
                 } else {
-                    throw new TargetUserNotFoundException("Target user not found with mobile number: " + request.getTargetMobileNumber());
+                    throw new UserNotFoundException("User Not Found with mobile number " + validateUser.getMobileNumber());
                 }
             } else {
                 throw new UserNotFoundException("User Not Found with mobile number " + validateUser.getMobileNumber());
             }
-            return null;
         }
 
     @Override
