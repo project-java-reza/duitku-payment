@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -96,10 +97,19 @@ public class BillServiceImpl implements BillService {
 
             List<Bill> paginatedBillList = billList.subList(start, end);
 
+            List<Bill> billResponses = new ArrayList<>();
+            for (Bill bill : paginatedBillList) {
+                Bill billResponse = new Bill(
+                        bill.getConsumerNo(), bill.getBillType(), bill.getAmount(), bill.getDescription(), bill.getReceiver(), null
+                );
+
+                billResponses.add(billResponse);
+            }
+
             Pageable pageable = PageRequest.of(page, size);
-            return new PageImpl<>(paginatedBillList,  pageable, billList.size());
+            return new PageImpl<>(billResponses, pageable, billList.size());
         } else {
-            throw new UserException("Please login in !");
+            throw new UserException("Please login!");
         }
     }
 }
