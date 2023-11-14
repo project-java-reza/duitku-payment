@@ -110,20 +110,34 @@ public class BankAccountServiceImpl implements BankAccountService {
                 // TODO 4 Extracting Amount from the Request
                 double amount = request.getAmount();
 
-                // TODO 5 Checking if Bank Account Balance is Sufficient
-                if (bankAccount.getBalance() >= amount){
+                // TODO 5 Getting wallet admin
+                String adminMobileNumber = "085156811979";
+                Optional<Wallet> admin = walletRepository.findById(adminMobileNumber);
 
+                // TODO 6 Checking if Bank Account Balance is Sufficient
+                if (bankAccount.getBalance() >= amount){
                     if (amount < 5.000) {
                         throw new TransferException("Minimum balance requirement not met. Minimum amount: 5,000" );
                     }
 
-                    // TODO 6 Updating Bank Account and User Wallet Balances
-                    bankAccount.setBalance(bankAccount.getBalance() - amount);
+                    // TODO 7 Define admin fee rate 1000
+                    double adminFee = 1000;
+
+                    // TODO 8 Getting Wallets from user admin and setBalance for admin fee latest
+                    if(admin.isPresent()) {
+                        Wallet adminWallet = admin.get();
+                        double adminBalance = adminWallet.getBalance();
+                        adminWallet.setBalance(adminFee + adminBalance);
+                        walletRepository.saveAndFlush(adminWallet);
+                    }
+
+                    // TODO 9 Updating Bank Account and User Wallet Balances
+                    bankAccount.setBalance(bankAccount.getBalance() - amount - adminFee);
 
                     Wallet userWallet = user.getWallet();
                     userWallet.setBalance(userWallet.getBalance() + amount);
 
-                    // TODO 7 Creating Transaction Request
+                    // TODO 10 Creating Transaction Request
                     TransactionRequest transaction = new TransactionRequest();
                     user.getMobileNumber();
                     transaction.setDescription("Wallet Top Up");
@@ -132,17 +146,17 @@ public class BankAccountServiceImpl implements BankAccountService {
                     transaction.setReceiver(request.getReceiver());
                     transaction.setAmount(request.getAmount());
 
-                    // TODO 8 Handling Transaction Service Exception
+                    // TODO 11 Handling Transaction Service Exception
                     try {
                         transactionService.addTransaction(transaction, token);
                     } catch (UserException e) {
                         throw new RuntimeException(e);
                     }
 
-                    // TODO 9 Saving Bank Account;
+                    // TODO 12 Saving Bank Account;
                     bankAccountRepository.saveAndFlush(bankAccount);
 
-                    // TODO 10 Building and Returning Bank Account Response
+                    // TODO 13 Building and Returning Bank Account Response
                     return BankAccountResponse.builder()
                             .mobileNumber(request.getMobileNumber())
                             .bankName(bankAccount.getBankName())
