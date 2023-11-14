@@ -5,6 +5,7 @@ import com.enigma.duitku.entity.Transaction;
 import com.enigma.duitku.entity.User;
 import com.enigma.duitku.entity.Wallet;
 import com.enigma.duitku.exception.ConflictException;
+import com.enigma.duitku.exception.TransferException;
 import com.enigma.duitku.exception.UserException;
 import com.enigma.duitku.model.request.BankAccountRequest;
 import com.enigma.duitku.model.request.TransactionRequest;
@@ -122,7 +123,7 @@ public class BankAccountServiceImpl implements BankAccountService {
 
     @Override
     @Transactional(rollbackOn = Exception.class)
-    public BankAccountResponse topUpWallet(BankAccountRequest request, String token) throws UserException, TransactionException {
+    public BankAccountResponse topUpWallet(BankAccountRequest request, String token) throws UserException, TransactionException, TransferException{
         Optional<BankAccount> optionalBankAccount = bankAccountRepository.findById(request.getMobileNumber());
 
         // TODO 1 Extracting User ID from JWT Token & Validate User
@@ -140,6 +141,10 @@ public class BankAccountServiceImpl implements BankAccountService {
 
                 // TODO 5 Checking if Bank Account Balance is Sufficient
                 if (bankAccount.getBalance() >= amount){
+
+                    if (amount <= 0) {
+                        throw new TransferException("Invalid amount: " + amount);
+                    }
 
                     // TODO 6 Updating Bank Account and User Wallet Balances
                     bankAccount.setBalance(bankAccount.getBalance() - amount);
@@ -174,17 +179,15 @@ public class BankAccountServiceImpl implements BankAccountService {
                             .accountNo(bankAccount.getAccountNo())
                             .build();
                 }else {
-
-                    // TODO 11 Handling Top-Up Failure
-                    return BankAccountResponse.builder()
-                            .errors("Top Up Failed")
-                            .build();
+                    throw new TransferException("Insufficient Funds! Available Wallet Balance: " + bankAccount.getBalance());
                 }
             }).orElseThrow(() -> new RuntimeException("User Not found"));
         } else {
             throw new UserException("Plese Login In!");
         }
     }
+
+
 
     @Override
     public Page<BankAccountResponse> getAllBankAccount(Integer page, Integer size, String token) throws UserException{
