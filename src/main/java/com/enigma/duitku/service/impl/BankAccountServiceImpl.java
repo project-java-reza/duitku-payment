@@ -54,27 +54,38 @@ public class BankAccountServiceImpl implements BankAccountService {
     @Override
     public BankAccountResponse addAccount(BankAccountRequest request, String token) throws UserException {
 
+        // TODO 1 : Extract the user ID from the JWT token using jwtUtils.
         String loggedInUserId = jwtUtils.extractUserId(token);
+
+        // TODO 2 : Retrieve the user object from the userService based on the extracted user ID.
         User user = userService.getById(loggedInUserId);
 
+        // TODO 3 : Check if User Exists
         if(user != null) {
 
+            // TODO 4 : Create a new BankAccount instance
             BankAccount bankAccount = new BankAccount();
+
+            // TODO 5 : Set BankAccount properties from the request
             bankAccount.setId(request.getMobileNumber());
             bankAccount.setAccountNo(request.getAccountNo());
 
-            if (request.getBalance() >= 0) {
+            // TODO 6 : Check Minimum Balance
+            if (request.getBalance() >= 50000) {
                 bankAccount.setBalance(request.getBalance());
             } else {
-                throw new IllegalArgumentException("Balance cannot be negative");
+                throw new IllegalArgumentException("Minimum Balance 50.000");
             }
 
+            // TODO 7 : Set BankAccount properties from the request (again, if the balance check passes)
             bankAccount.setBalance(request.getBalance());
             bankAccount.setBankName(request.getBankName());
             bankAccount.setUser(user);
 
+            // TODO 8 : Save the BankAccount to the repository
             bankAccountRepository.saveAndFlush(bankAccount);
 
+            // TODO 9 : Build and return BankAccountResponse
             return BankAccountResponse.builder()
                     .mobileNumber(request.getMobileNumber())
                     .bankName(request.getBankName())
