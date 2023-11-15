@@ -12,8 +12,7 @@ services:
       - "postgres-data:/var/lib/postgresql/data"
     image: postgres
 
-  app-toko-mandiri:
-    image: duitku
+  duitku-app:
     container_name: app-duitku
     depends_on:
       - postgresql
@@ -26,7 +25,9 @@ services:
       - PASSWORD_DB=Rahasia
     ports:
       - "8085:8080"
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile
     networks:
       - app-network
 
