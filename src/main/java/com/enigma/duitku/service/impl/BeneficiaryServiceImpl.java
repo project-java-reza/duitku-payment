@@ -68,6 +68,7 @@ public class BeneficiaryServiceImpl implements BeneficiaryService {
 
             // TODO 4: Add beneficiary if not exist
             if (existingBeneficiary == null) {
+
                 // TODO 5: Data does not exist or status is not deleted, add new Beneficiary
                 Beneficiary newBeneficiary = new Beneficiary();
                 newBeneficiary.setMobileNumber(request.getMobileNumber());
