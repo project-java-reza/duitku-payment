@@ -83,19 +83,14 @@ public class WalletServiceImpl implements WalletService {
                 Optional<Wallet> optionalWallet = walletRepository.findById(validateUser.getMobileNumber());
 
                 // TODO 7 Checking if Wallet is Present
-
                 if (optionalWallet.isPresent()) {
                     // TODO 8 Checking Available Balance
                     Double availableBalance = optionalWallet.get().getBalance();
 
-                    // TODO 9 Getting wallet admin
-                    String adminMobileNumber = "085156811979";
-                    Optional<Wallet> admin = walletRepository.findById(adminMobileNumber);
-
-                    // TODO 10 Checking if Available Balance is Sufficient
+                    // TODO 9 Checking if Available Balance is Sufficient
                     if (availableBalance >= request.getAmount()) {
 
-                        // TODO 11 Creating Transaction Request
+                        // TODO 10 Creating Transaction Request
                         TransactionRequest transaction = new TransactionRequest();
                         targetBeneficiary.getAccountNo();
                         transaction.setDescription(request.getDescription());
@@ -106,23 +101,11 @@ public class WalletServiceImpl implements WalletService {
 
                         if (transaction != null) {
 
-                            // TODO 12 Define admin fee rate 2000
-                            double adminFee = 2000;
-
-                            // TODO 13 Getting Wallets from user admin and setBalance for admin fee latest
-                            if(admin.isPresent()) {
-                                Wallet adminWallet = admin.get();
-                                double adminBalance = adminWallet.getBalance();
-                                adminWallet.setBalance(adminFee + adminBalance);
-                                walletRepository.saveAndFlush(adminWallet);
-                            }
-
-                            // TODO 14 Updating Wallet Balance and Saving Transaction
-                            wallet.setBalance(availableBalance - request.getAmount() - adminFee);
-
+                            // TODO 11 Updating Wallet Balance and Saving Transaction
+                            wallet.setBalance(availableBalance - request.getAmount());
                             walletRepository.save(wallet);
 
-                            // TODO 15 Building and Returning Transaction Response
+                            // TODO 12 Building and Returning Transaction Response
                             return TransactionResponse.builder()
                                     .amount(transaction.getAmount())
                                     .receiver(transaction.getReceiver())
@@ -151,115 +134,115 @@ public class WalletServiceImpl implements WalletService {
     public TransactionResponse transferMoneyToUser(TransactionRequest request, String token)
             throws UserException, TargetUserNotFoundException, UserNotFoundException, TransferException {
 
-            // TODO 1 Extracting User ID from JWT Token & Validate User
-            String loggedInUserId = jwtUtils.extractUserId(token);
-            User validateUser = userService.getById(loggedInUserId);
+        // TODO 1 Extracting User ID from JWT Token & Validate User
+        String loggedInUserId = jwtUtils.extractUserId(token);
+        User validateUser = userService.getById(loggedInUserId);
 
-            // TODO 2 Checking if User is not null
-            if (validateUser != null) {
-                // TODO 3 Getting Optional User by ID
-                Optional<User> optionalUser = userRepository.findById(validateUser.getMobileNumber());
+        // TODO 2 Checking if User is not null
+        if (validateUser != null) {
+            // TODO 3 Getting Optional User by ID
+            Optional<User> optionalUser = userRepository.findById(validateUser.getMobileNumber());
 
-                log.info("ID Login " + validateUser.getWallet().getId());
+            log.info("ID Login " + validateUser.getWallet().getId());
 
-                // TODO 4 Checking if Optional User is present
-                if (optionalUser.isPresent()) {
+            // TODO 4 Checking if Optional User is present
+            if (optionalUser.isPresent()) {
 
-                    // TODO 5 Getting Optional Target User by Mobile Number
-                    Optional<User> targetUser = userRepository.findById(request.getTargetMobileNumber());
-                    log.info(" Target Mobile Number " + request.getTargetMobileNumber());
+                // TODO 5 Getting Optional Target User by Mobile Number
+                Optional<User> targetUser = userRepository.findById(request.getTargetMobileNumber());
+                log.info(" Target Mobile Number " + request.getTargetMobileNumber());
 
-                    // TODO 6 Initializing Balance Variables
-                    Double availableBalance = null;
-                    Double targetAvailableBalance;
+                // TODO 6 Initializing Balance Variables
+                Double availableBalance = null;
+                Double targetAvailableBalance;
 
-                    // TODO 7 Checking if Target User is present
-                    if (targetUser != null) {
+                // TODO 7 Checking if Target User is present
+                if (targetUser != null) {
 
-                        // TODO 8 Getting Wallets of Source and Target Users
-                        Optional<User> user = optionalUser;
-                        Wallet wallet = user.get().getWallet();
-                        Wallet targetWallet = targetUser.get().getWallet();
+                    // TODO 8 Getting Wallets of Source and Target Users
+                    Optional<User> user = optionalUser;
+                    Wallet wallet = user.get().getWallet();
+                    Wallet targetWallet = targetUser.get().getWallet();
 
-                        // TODO 9 Getting wallet admin
-                        String adminMobileNumber = "085156811979";
-                        Optional<Wallet> admin = walletRepository.findById(adminMobileNumber);
+                    // TODO 9 Getting wallet admin
+                    String adminMobileNumber = "085156811979";
+                    Optional<Wallet> admin = walletRepository.findById(adminMobileNumber);
 
-                        // TODO 10 Checking for Self-Transfer and Returning Error:
-                        if (validateUser.getMobileNumber().equals(request.getTargetMobileNumber())) {
+                    // TODO 10 Checking for Self-Transfer and Returning Error:
+                    if (validateUser.getMobileNumber().equals(request.getTargetMobileNumber())) {
+                        return TransactionResponse.builder()
+                                .errors("Cannot transfer money to yourself")
+                                .build();
+                    }
+
+                    // TODO 11 Getting Balances and Target User's Transaction List
+                    availableBalance = wallet.getBalance();
+                    targetAvailableBalance = targetWallet.getBalance();
+
+                    List<Transaction> targetListOfTransactions = targetWallet.getListOfTransactions();
+
+                    // TODO 12 Checking if Available Balance is Sufficient
+                    if (availableBalance >= request.getAmount()) {
+
+                        // TODO 13 Creating Transaction Request and Adding Transaction
+                        TransactionRequest transactionRequest = new TransactionRequest();
+                        transactionRequest.setTransactionType(request.getTransactionType());
+                        transactionRequest.setDescription(request.getDescription());
+                        transactionRequest.setAmount(request.getAmount());
+                        transactionRequest.setReceiver(request.getReceiver());
+                        transactionService.addTransaction(transactionRequest, token);
+
+                        // TODO 14 Checking for Minimum Transfer Amount:
+                        if (request.getAmount() < 10000) {
                             return TransactionResponse.builder()
-                                    .errors("Cannot transfer money to yourself")
+                                    .errors("Minimum balance requirement not met. Minimum amount: 10,000")
                                     .build();
                         }
 
-                        // TODO 11 Getting Balances and Target User's Transaction List
-                        availableBalance = wallet.getBalance();
-                        targetAvailableBalance = targetWallet.getBalance();
+                        // TODO 15 Updating Balances and Saving Wallets
+                        targetWallet.setBalance(targetAvailableBalance + request.getAmount());
 
-                        List<Transaction> targetListOfTransactions = targetWallet.getListOfTransactions();
+                        // TODO 16 Define admin fee rate 2000
+                        double adminFee = 2000;
 
-                        // TODO 12 Checking if Available Balance is Sufficient
-                        if (availableBalance >= request.getAmount()) {
-
-                            // TODO 13 Creating Transaction Request and Adding Transaction
-                            TransactionRequest transactionRequest = new TransactionRequest();
-                            transactionRequest.setTransactionType(request.getTransactionType());
-                            transactionRequest.setDescription(request.getDescription());
-                            transactionRequest.setAmount(request.getAmount());
-                            transactionRequest.setReceiver(request.getReceiver());
-                            transactionService.addTransaction(transactionRequest, token);
-
-                            // TODO 14 Checking for Minimum Transfer Amount:
-                            if (request.getAmount() < 10000) {
-                                return TransactionResponse.builder()
-                                        .errors("Minimum balance requirement not met. Minimum amount: 10,000")
-                                        .build();
-                            }
-
-                            // TODO 15 Updating Balances and Saving Wallets
-                            targetWallet.setBalance(targetAvailableBalance + request.getAmount());
-
-                            // TODO 16 Define admin fee rate 1000
-                            double adminFee = 1000;
-
-                            // TODO 17 Getting Wallets from user admin and setBalance for admin fee latest
-                            if(admin.isPresent()) {
-                                Wallet adminWallet = admin.get();
-                                double adminBalance = adminWallet.getBalance();
-                                adminWallet.setBalance(adminFee + adminBalance);
-                                walletRepository.saveAndFlush(adminWallet);
-                            }
-
-                            // TODO 18 Setting wallet user aftertotal amount fee admin
-                            double amountAfterAdminFee = request.getAmount() + adminFee;
-
-                            // TODO 19 Set the latest money amount after admin fee
-                            wallet.setBalance(availableBalance - amountAfterAdminFee);
-
-                            // TODO 20 Save to database wallet and target wallet latest
-                            walletRepository.saveAndFlush(wallet);
-                            walletRepository.saveAndFlush(targetWallet);
-
-                            // TODO 21 Building and Returning Transaction Response
-                            return TransactionResponse.builder()
-                                    .amount(transactionRequest.getAmount())
-                                    .receiver(transactionRequest.getReceiver())
-                                    .description(transactionRequest.getDescription())
-                                    .transactionType(transactionRequest.getTransactionType())
-                                    .build();
-                        } else {
-                            throw new TransferException("Insufficient Funds! Available Wallet Balance: " + availableBalance);
+                        // TODO 17 Getting Wallets from user admin and setBalance for admin fee latest
+                        if(admin.isPresent()) {
+                            Wallet adminWallet = admin.get();
+                            double adminBalance = adminWallet.getBalance();
+                            adminWallet.setBalance(adminFee + adminBalance);
+                            walletRepository.saveAndFlush(adminWallet);
                         }
+
+                        // TODO 18 Setting wallet user aftertotal amount fee admin
+                        double amountAfterAdminFee = request.getAmount() + adminFee;
+
+                        // TODO 19 Set the latest money amount after admin fee
+                        wallet.setBalance(availableBalance - amountAfterAdminFee);
+
+                        // TODO 20 Save to database wallet and target wallet latest
+                        walletRepository.saveAndFlush(wallet);
+                        walletRepository.saveAndFlush(targetWallet);
+
+                        // TODO 21 Building and Returning Transaction Response
+                        return TransactionResponse.builder()
+                                .amount(transactionRequest.getAmount())
+                                .receiver(transactionRequest.getReceiver())
+                                .description(transactionRequest.getDescription())
+                                .transactionType(transactionRequest.getTransactionType())
+                                .build();
                     } else {
-                        throw new TargetUserNotFoundException("Target user not found with mobile number: " + request.getTargetMobileNumber());
+                        throw new TransferException("Insufficient Funds! Available Wallet Balance: " + availableBalance);
                     }
                 } else {
-                    throw new UserNotFoundException("User Not Found with mobile number " + validateUser.getMobileNumber());
+                    throw new TargetUserNotFoundException("Target user not found with mobile number: " + request.getTargetMobileNumber());
                 }
             } else {
                 throw new UserNotFoundException("User Not Found with mobile number " + validateUser.getMobileNumber());
             }
+        } else {
+            throw new UserNotFoundException("User Not Found with mobile number " + validateUser.getMobileNumber());
         }
+    }
 
     @Override
     public Wallet getById(String id, String token) throws UserException {
