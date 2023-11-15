@@ -16,5 +16,7 @@ public interface BeneficiaryService {
 
     Page<BeneficiaryResponse> viewAllBeneficiaries(Integer page, Integer size, String token) throws UserException;
 
+    Page<BeneficiaryResponse> viewAllBeneficiariesAdmin(Integer page, Integer size) throws UserException;
+
     String deleteByMobileNumber(String beneficiaryMobileNumber, String token) throws BeneficiaryException, LoginException;
 }

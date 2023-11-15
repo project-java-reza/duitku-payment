@@ -15,7 +15,6 @@ import com.enigma.duitku.security.JwtUtils;
 import com.enigma.duitku.service.BankAccountService;
 import com.enigma.duitku.service.TransactionService;
 import com.enigma.duitku.service.UserService;
-import com.enigma.duitku.util.AccountUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.TransactionException;
@@ -51,8 +50,6 @@ public class BankAccountServiceImpl implements BankAccountService {
     private final JwtUtils jwtUtils;
 
     private final UserService userService;
-
-    private final AccountUtil accountUtil;
 
     @Override
     public BankAccountResponse addAccount(BankAccountRequest request, String token) throws UserException {
@@ -102,6 +99,7 @@ public class BankAccountServiceImpl implements BankAccountService {
 
     @Override
     public BankAccountResponse getById(String id, String token) throws UserException {
+        // Ekstrak ID pengguna dari token
         String loggedInUserId = jwtUtils.extractUserId(token);
         User user = userService.getById(loggedInUserId);
 
@@ -110,11 +108,11 @@ public class BankAccountServiceImpl implements BankAccountService {
 
             return BankAccountResponse.builder()
                     .mobileNumber(bankAccount.getAccountNo())
+                    .bankName(bankAccount.getBankName())
                     .build();
         } else {
             throw new UserException("Plese Login In!");
         }
-
     }
 
     @Override

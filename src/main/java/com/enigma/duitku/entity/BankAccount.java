@@ -28,5 +28,4 @@ public class BankAccount {
         @OneToOne(fetch = FetchType.LAZY)
         @JoinColumn(name = "mobile_number")
         private User user;
-
 }

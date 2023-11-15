@@ -108,6 +108,36 @@ public class BeneficiaryController {
         }
     }
 
+    @GetMapping("/viewall/admin")
+    public ResponseEntity<?> getAllBeneficiaryResponse(
+            @RequestParam(name = "page", required = false, defaultValue = "0")Integer page,
+            @RequestParam(name = "size", required = false, defaultValue = "5")Integer size
+    ) throws UserException {
+
+        try {
+                Page<BeneficiaryResponse> beneficiaryResponses = beneficiaryService.viewAllBeneficiariesAdmin(page, size);
+                PagingResponse pagingResponse = PagingResponse.builder()
+                        .currentPage(page)
+                        .totalPage(beneficiaryResponses.getTotalPages())
+                        .size(size)
+                        .build();
+
+                return ResponseEntity.status(HttpStatus.OK)
+                        .body(CommonResponse.builder()
+                                .statusCode(HttpStatus.OK.value())
+                                .message("Successfully get all beneficiaries")
+                                .data(beneficiaryResponses.getContent())
+                                .paging(pagingResponse)
+                                .build());
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(CommonResponse.<BankAccountResponse>builder()
+                            .statusCode(HttpStatus.NOT_FOUND.value())
+                            .message("View all failed " + e.getMessage())
+                            .build());
+        }
+    }
+
     @DeleteMapping("/delete")
     public ResponseEntity <?> deleteBeneficiary(@RequestParam String beneficiaryMobileNumber, HttpServletRequest httpServletRequest) throws BeneficiaryException, LoginException {
 

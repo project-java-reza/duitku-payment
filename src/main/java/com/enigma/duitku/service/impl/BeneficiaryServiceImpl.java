@@ -19,6 +19,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import javax.security.auth.login.LoginException;
@@ -150,38 +151,66 @@ public class BeneficiaryServiceImpl implements BeneficiaryService {
         } else {
             throw new UserException("Please Login In!");
         }
+    }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @Override
+    public Page<BeneficiaryResponse> viewAllBeneficiariesAdmin(Integer page, Integer size) throws UserException {
+
+            Pageable pageable = PageRequest.of(page, size);
+            Page<Beneficiary> beneficiaries = beneficiaryRepository.findAll(pageable);
+            List<BeneficiaryResponse> allBeneficiaries = new ArrayList<>();
+            for (Beneficiary beneficiary : beneficiaries.getContent()) {
+                BeneficiaryResponse beneficiaryResponse = BeneficiaryResponse.builder()
+                        .mobileNumber(beneficiary.getMobileNumber())
+                        .accountNo(beneficiary.getAccountNo())
+                        .name(beneficiary.getName())
+                        .bankName(beneficiary.getBankName())
+                        .build();
+                allBeneficiaries.add(beneficiaryResponse);
+            }
+        return new PageImpl<>(allBeneficiaries, pageable, beneficiaries.getTotalElements());
     }
 
     @Override
     public String deleteByMobileNumber(String beneficiaryMobileNumber, String token) throws BeneficiaryException, LoginException {
 
         try {
+            // TODO 1: Validate user
             String loggedInUserId = jwtUtils.extractUserId(token);
             User user = userService.getById(loggedInUserId);
 
             if (user != null) {
+                // TODO 2 : Retrieve the user's wallet and list of beneficiaries
                 Wallet wallet = user.getWallet();
                 List<Beneficiary> listofbeneficiaries = wallet.getListOfBeneficiaries();
 
+                // TODO 3 : Check if the list of beneficiaries is not empty
                 if (!listofbeneficiaries.isEmpty()) {
                     Beneficiary targetBeneficiary = null;
                     Iterator<Beneficiary> iterator = listofbeneficiaries.iterator();
 
+                    // TODO 4 : Iterate through the list of beneficiaries
                     while (iterator.hasNext()) {
                         Beneficiary b = iterator.next();
+
+                        // TODO 5 : Check if the mobile number matches
                         if (Objects.equals(b.getMobileNumber(), beneficiaryMobileNumber)) {
                             targetBeneficiary = b;
                             break;
                         }
                     }
 
+                    // TODO 6 : Check if a matching beneficiary is found
                     if (targetBeneficiary != null) {
+
+                        // TODO 7 : Set the status to "deleted" and delete the beneficiary
                         targetBeneficiary.setStatus("deleted");
                         beneficiaryRepository.delete(targetBeneficiary);
                         return "Beneficiary has been Successfully Deleted!";
 
                     } else {
+                        // TODO 8 : No matching beneficiary found, throw an exception
                         throw new BeneficiaryException("No Registered Beneficiary Found with this Mobile Number: " + beneficiaryMobileNumber);
                     }
 

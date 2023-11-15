@@ -51,7 +51,7 @@ public class BankAccountController {
     }
 
     @GetMapping("/profile/{id}")
-   public ResponseEntity<?> getViewProfileBankAccount(@PathVariable String id, HttpServletRequest httpServletRequest) throws UserException {
+    public ResponseEntity<?> getViewProfileBankAccount(@PathVariable String id, HttpServletRequest httpServletRequest) throws UserException {
         try {
             String jwtToken = authTokenFilter.parseJwt(httpServletRequest);
             return ResponseEntity.status(HttpStatus.OK)
@@ -67,7 +67,7 @@ public class BankAccountController {
                             .message("Profile id not found" + e.getMessage())
                             .build());
         }
-   }
+    }
 
     @PostMapping("/topup")
     public ResponseEntity<?> topUpWallet(@RequestBody BankAccountRequest request, HttpServletRequest httpServletRequest) throws UserException, TransactionException {
