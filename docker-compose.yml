@@ -17,14 +17,14 @@ services:
     depends_on:
       - postgresql
     environment:
-      - HOST_DB=postgresql
-      - PORT_DB=5432
+      - DB_LOCAL_HOST=postgresql
+      - DB_PORT=5432
       - APP_PORT=8080
       - DB_NAME=duitku
-      - USERNAME_DB=postgres
-      - PASSWORD_DB=Rahasia
+      - DB_USER=postgres
+      - DB_PASSWORD=Rahasia
     ports:
-      - "8085:8080"
+      - "8080:8080"
     build: .
     networks:
       - app-network
