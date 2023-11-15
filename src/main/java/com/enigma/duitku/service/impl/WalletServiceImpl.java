@@ -105,8 +105,8 @@ public class WalletServiceImpl implements WalletService {
 
                         if (transaction != null) {
 
-                            // TODO 12 Define admin fee rate 1000
-                            double adminFee = 1000;
+                            // TODO 12 Define admin fee rate 2000
+                            double adminFee = 2000;
 
                             // TODO 13 Getting Wallets from user admin and setBalance for admin fee latest
                             if(admin.isPresent()) {
@@ -218,8 +218,8 @@ public class WalletServiceImpl implements WalletService {
                             // TODO 15 Updating Balances and Saving Wallets
                             targetWallet.setBalance(targetAvailableBalance + request.getAmount());
 
-                            // TODO 16 Define admin fee rate 2000
-                            double adminFee = 2000;
+                            // TODO 16 Define admin fee rate 1000
+                            double adminFee = 1000;
 
                             // TODO 17 Getting Wallets from user admin and setBalance for admin fee latest
                             if(admin.isPresent()) {
