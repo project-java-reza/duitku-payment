@@ -62,6 +62,13 @@ public class BankAccountServiceImpl implements BankAccountService {
             BankAccount bankAccount = new BankAccount();
             bankAccount.setId(request.getMobileNumber());
             bankAccount.setAccountNo(request.getAccountNo());
+
+            if (request.getBalance() >= 0) {
+                bankAccount.setBalance(request.getBalance());
+            } else {
+                throw new IllegalArgumentException("Balance cannot be negative");
+            }
+
             bankAccount.setBalance(request.getBalance());
             bankAccount.setBankName(request.getBankName());
             bankAccount.setUser(user);
