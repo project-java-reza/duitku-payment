@@ -25,9 +25,7 @@ services:
       - PASSWORD_DB=Rahasia
     ports:
       - "8085:8080"
-    build:
-      context: .
-      dockerfile: Dockerfile
+    build: .
     networks:
       - app-network
 
