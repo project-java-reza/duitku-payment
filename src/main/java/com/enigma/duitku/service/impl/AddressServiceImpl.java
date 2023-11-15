@@ -100,15 +100,21 @@ public class AddressServiceImpl implements AddressService {
 
     @Override
     public void removeAddress(String id, String token) throws UserException{
+        // TODO 1 : Extract the user ID from the JWT token using jwtUtils.
         String loggedInUserId = jwtUtils.extractUserId(token);
+
+        // TODO 2 : Retrieve the user object from the userService based on the extracted user ID.
         User userValidate = userService.getById(loggedInUserId);
 
         if(userValidate != null) {
+            // TODO 3 : Retrieving and Deleting Addresses
             Address address = addressRepository.findById(id).orElse(null);
 
             if(address != null) {
+                // TODO 4 : Removes the address from the user object
                 userValidate.setAddress(null);
 
+                // TODO : Removes the address entity from the repository
                 addressRepository.delete(address);
             }
         } else {
