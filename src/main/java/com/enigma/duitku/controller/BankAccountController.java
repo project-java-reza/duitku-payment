@@ -41,10 +41,10 @@ public class BankAccountController {
                                 .message("Successfully created bank account")
                                 .build());
         } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.CONFLICT)
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(CommonResponse.<BankAccountResponse>builder()
-                            .statusCode(HttpStatus.CONFLICT.value())
-                            .message("Failed add account " + e.getMessage())
+                            .statusCode(HttpStatus.BAD_REQUEST.value())
+                            .message("Failed add bank account " + e.getMessage())
                             .build());
         }
 
