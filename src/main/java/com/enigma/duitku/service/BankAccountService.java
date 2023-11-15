@@ -11,7 +11,7 @@ import org.springframework.data.domain.Page;
 public interface BankAccountService {
 
     BankAccountResponse addAccount(BankAccountRequest request, String token) throws UserException;
-    BankAccount getById(String id, String token) throws UserException;
+    BankAccountResponse getById(String id, String token) throws UserException;
     BankAccountResponse topUpWallet(BankAccountRequest request, String token) throws UserException, TransactionException;
 
     Page<BankAccountResponse> getAllBankAccount(Integer page, Integer size) throws UserException;

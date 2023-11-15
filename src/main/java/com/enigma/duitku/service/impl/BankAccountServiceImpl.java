@@ -98,12 +98,20 @@ public class BankAccountServiceImpl implements BankAccountService {
     }
 
     @Override
-    public BankAccount getById(String id, String token) throws UserException {
+    public BankAccountResponse getById(String id, String token) throws UserException {
         String loggedInUserId = jwtUtils.extractUserId(token);
         User user = userService.getById(loggedInUserId);
 
         if(user != null) {
-            return bankAccountRepository.findById(id).orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, "Bank Account Not found"));
+            BankAccount bankAccount = bankAccountRepository.findById(id)
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Bank Account Not found"));
+
+            return BankAccountResponse.builder()
+                    .mobileNumber(bankAccount.getId())
+                    .bankName(bankAccount.getBankName())
+                    .accountNo(bankAccount.getAccountNo())
+                    .balance(bankAccount.getBalance())
+                    .build();
         } else {
             throw new UserException("Plese Login In!");
         }
