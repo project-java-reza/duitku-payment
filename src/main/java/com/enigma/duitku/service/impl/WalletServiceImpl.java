@@ -57,6 +57,7 @@ public class WalletServiceImpl implements WalletService {
 
         // TODO 2 Checking if User is not null
         if (validateUser != null) {
+
             // TODO 3 Getting User's Wallet
             Wallet wallet = validateUser.getWallet();
 
