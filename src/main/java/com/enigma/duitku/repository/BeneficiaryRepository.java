@@ -8,6 +8,7 @@ import java.util.Optional;
 
 @Repository
 public interface BeneficiaryRepository extends JpaRepository<Beneficiary, String> {
+    Beneficiary findByAccountNo(String accountNo);
 
 }
 

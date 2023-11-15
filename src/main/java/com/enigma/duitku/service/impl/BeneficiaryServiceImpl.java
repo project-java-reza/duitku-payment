@@ -64,30 +64,37 @@ public class BeneficiaryServiceImpl implements BeneficiaryService {
                 }
             }
 
+            Beneficiary existingBeneficiary = beneficiaryRepository.findByAccountNo(request.getAccountNo());
+
             // TODO 4: Add beneficiary if not exist
-            if (databaseBeneficiary == null) {
+            if (existingBeneficiary == null) {
+                // TODO 5: Data does not exist or status is not deleted, add new Beneficiary
                 Beneficiary newBeneficiary = new Beneficiary();
                 newBeneficiary.setMobileNumber(request.getMobileNumber());
                 newBeneficiary.setName(request.getName());
                 newBeneficiary.setBankName(request.getBankName());
                 newBeneficiary.setAccountNo(request.getAccountNo());
+                newBeneficiary.setStatus("Active");
 
-                // TODO 5: Save the newBeneficiary first
+                // TODO 6: Save the newBeneficiary first
                 newBeneficiary = beneficiaryRepository.save(newBeneficiary);
 
-                // TODO 6: Add the newBeneficiary to the list of beneficiaries
+                // TODO 7 : Add the newBeneficiary to the list of beneficiaries
                 beneficiaryList.add(newBeneficiary);
                 wallet.setListOfBeneficiaries(beneficiaryList);
 
-                // TODO 7: Save the wallet with the updated list of beneficiaries
+                // TODO 8 : Save the wallet with the updated list of beneficiaries
                 walletRepository.save(wallet);
-            } else {
-                return BeneficiaryResponse.builder()
-                        .errors("Failed to add account")
-                        .build();
+            } else  {
+
+                // TODO 9 : Data exists and status is deleted, update the status to Active
+                existingBeneficiary.setMobileNumber(request.getMobileNumber());
+                existingBeneficiary.setName(request.getName());
+                existingBeneficiary.setBankName(request.getBankName());
+                existingBeneficiary.setStatus("Active");
             }
 
-            // TODO 8: Return BeneficiaryResponse
+            // TODO 10: Return BeneficiaryResponse
             return BeneficiaryResponse.builder()
                     .mobileNumber(request.getMobileNumber())
                     .bankName(request.getBankName())
@@ -101,16 +108,34 @@ public class BeneficiaryServiceImpl implements BeneficiaryService {
         }
     }
 
+    public List<Beneficiary> getAllActiveBeneficiaries(User user) {
+        List<Beneficiary> allBeneficiaries = user.getWallet().getListOfBeneficiaries();
+        List<Beneficiary> activeBeneficiaries = new ArrayList<>();
+
+        for (Beneficiary beneficiary : allBeneficiaries) {
+            if ("Active".equals(beneficiary.getStatus())) {
+                activeBeneficiaries.add(beneficiary);
+            }
+        }
+
+        return activeBeneficiaries;
+    }
+
     @Override
     public Page<BeneficiaryResponse> viewAllBeneficiaries(Integer page, Integer size, String token) throws UserException {
 
         String loggedInUserId = jwtUtils.extractUserId(token);
         User user = userService.getById(loggedInUserId);
         if(user != null) {
-            Pageable pageable = PageRequest.of(page, size);
-            Page<Beneficiary> beneficiaries = beneficiaryRepository.findAll(pageable);
+
+            List<Beneficiary> activeBeneficiaries = getAllActiveBeneficiaries(user);
+
+            int start = page * size;
+            int end = Math.min((start + size), activeBeneficiaries.size());
+            Page<Beneficiary> pageBeneficiaries = new PageImpl<>(activeBeneficiaries.subList(start, end), PageRequest.of(page, size), activeBeneficiaries.size());
+
             List<BeneficiaryResponse> beneficiaryResponses = new ArrayList<>();
-            for(Beneficiary beneficiary: beneficiaries.getContent()) {
+            for (Beneficiary beneficiary : pageBeneficiaries.getContent()) {
                 BeneficiaryResponse beneficiaryResponse = BeneficiaryResponse.builder()
                         .mobileNumber(beneficiary.getMobileNumber())
                         .accountNo(beneficiary.getAccountNo())
@@ -120,7 +145,7 @@ public class BeneficiaryServiceImpl implements BeneficiaryService {
                 beneficiaryResponses.add(beneficiaryResponse);
             }
 
-            return new PageImpl<>(beneficiaryResponses, pageable, beneficiaries.getTotalElements());
+            return new PageImpl<>(beneficiaryResponses, pageBeneficiaries.getPageable(), pageBeneficiaries.getTotalElements());
         } else {
             throw new UserException("Please Login In!");
         }
@@ -151,9 +176,7 @@ public class BeneficiaryServiceImpl implements BeneficiaryService {
                     }
 
                     if (targetBeneficiary != null) {
-                        listofbeneficiaries.remove(targetBeneficiary);
-                        wallet.setListOfBeneficiaries(listofbeneficiaries);
-                        walletRepository.save(wallet);
+                        targetBeneficiary.setStatus("deleted");
                         beneficiaryRepository.delete(targetBeneficiary);
                         return "Beneficiary has been Successfully Deleted!";
 

@@ -34,4 +34,8 @@ public class Beneficiary {
 
     @Column(name= "bank_name", length = 15, nullable = false)
     private String bankName;
+
+
+    @Column(name = "status", length = 10, nullable = false)
+    private String status;
 }
