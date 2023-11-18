@@ -25,10 +25,8 @@ public class UserCredential {
     @Size(min = 10, message = "Mobile number must be at least 10 characters long")
     private String mobileNumber;
 
-    @NotNull(message = "{User.password.invalid}")
-    @NotBlank(message = "{User.password.invalid}")
-    @NotEmpty(message = "{User.password.invalid}")
-    @Pattern(regexp = "^(?=.*\\d)(?=.*[A-Z])(?=.*[a-z])(?=.*[^\\w\\d\\s:])([^\\s]){6,12}$", message = "{User.password.invalid}")
+    @NotBlank(message = "Password is required")
+    @Size(min = 8, message = "Password must be at least 8 characters long")
     private String password;
 
     @ManyToMany(fetch = FetchType.EAGER)
