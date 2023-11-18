@@ -1,10 +1,10 @@
 package com.enigma.duitku.entity;
 
 import lombok.*;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
-import java.time.LocalDate;
 
 @Entity
 @Getter
@@ -16,34 +16,31 @@ import java.time.LocalDate;
 public class User {
 
     @Id
-    @NotBlank(message= "{User.mobileNumber.notBlankAndNotEmpty}")
-    @NotEmpty(message= "{User.mobileNumber.notBlankAndNotEmpty}")
-    @Size(min = 10, max= 12, message = "{User.mobileNumber.invalid}")
+    @NotBlank(message= "Mobile number is required")
+    @NotEmpty(message= "Mobile number is required")
+    @Size(min = 10, max= 12, message = "Mobile number must be between 10 and 12 characters")
     @Column(name = "mobile_number")
     private String mobileNumber;
 
-    @NotBlank(message = "{User.name.invalid}")
-    @NotEmpty(message = "{User.name.invalid}")
-    @NotNull(message = "{User.name.invalid]")
-    @Column(length = 50)
-    private String firstName;
-
-    @NotBlank(message = "{User.name.invalid}")
-    @NotEmpty(message = "{User.name.invalid}")
-    @NotNull(message = "{User.name.invalid]")
-    @Column(length = 50)
-    private String lastName;
-
-    @NotBlank(message = "{User.email.notBlankAndNotEmpty}")
-    @NotEmpty(message = "{User.email.notBlankAndNotEmpty}")
-    @Email(regexp = "[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,3}", flags = Pattern.Flag.CASE_INSENSITIVE, message = "{User.email.notBlankAndNotEmpty}")
-    @Column(length = 100)
+    @NotBlank(message = "Email is required")
+    @Email(message = "Invalid email address")
+    @Column(unique = true)
     private String email;
 
-    @NotBlank(message = "{User.dateOfBirth.invalid}")
-    @NotEmpty(message = "{User.dateOfBirth.invalid}")
+    @NotBlank(message = "First name is required")
+    @Size(max = 50, message = "First name must not exceed 50 characters")
+    @Column(name = "first_name")
+    private String firstName;
+
+    @NotBlank(message = "Last name is required")
+    @Size(max = 50, message = "Last name must not exceed 50 characters")
+    @Column(name = "last_name")
+    private String lastName;
+
+    @NotBlank(message = "Date of birth is required")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     @Column(name = "date_of_birth")
-    private LocalDate dateOfBirth;
+    private String dateOfBirth;
 
     @OneToOne
     @JoinColumn(name = "user_credential_id")

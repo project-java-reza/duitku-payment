@@ -1,11 +1,12 @@
 package com.enigma.duitku.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
-import java.time.LocalDate;
 
 @Entity
 @Table(name = "m_admin")
@@ -21,34 +22,29 @@ public class Admin {
     @GeneratedValue(generator = "system-uuid")
     private String id;
 
-    @NotBlank(message = "{Admin.name.invalid}")
-    @NotEmpty(message = "{Admin.name.invalid}")
-    @NotNull(message = "{Admin.name.invalid]")
-    @Column(length = 50)
-    private String firstname;
-
-    @NotBlank(message = "{Admin.name.invalid}")
-    @NotEmpty(message = "{Admin.name.invalid}")
-    @NotNull(message = "{Admin.name.invalid]")
-    @Column(length = 50)
-    private String lastName;
-
-    @NotBlank(message = "{Admin.email.notBlankAndNotEmpty}")
-    @NotEmpty(message = "{Admin.email.notBlankAndNotEmpty}")
-    @Email(regexp = "[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,3}", flags = Pattern.Flag.CASE_INSENSITIVE, message = "{User.email.notBlankAndNotEmpty}")
-    @Column(length = 100)
-    private String email;
-
-    @NotBlank(message= "{Admin.mobileNumber.notBlankAndNotEmpty}")
-    @NotEmpty(message= "{Admin.mobileNumber.notBlankAndNotEmpty}")
-    @Size(min = 10, max= 12, message = "{Admin.mobileNumber.invalid}")
-    @Column(name = "mobile_number")
+    @NotBlank(message = "Mobile number is required")
+    @Size(min = 10, max = 12, message = "Invalid mobile number")
+    @Column(name = "mobile_number", unique = true)
     private String mobileNumber;
 
-    @NotBlank(message = "{Admin.dateOfBirth.invalid}")
-    @NotEmpty(message = "{Admin.dateOfBirth.invalid}")
-    @Column(name = "date_of_birth")
-    private LocalDate dateOfBirth;
+    @NotBlank(message = "Email is required")
+    @Email(message = "Invalid email address")
+    @Column(unique = true)
+    private String email;
+
+    @NotBlank(message = "First name is required")
+    @Size(max = 50, message = "First name must not exceed 50 characters")
+    @Column(name = "first_name")
+    private String firstName;
+
+    @NotBlank(message = "Last name is required")
+    @Size(max = 50, message = "Last name must not exceed 50 characters")
+    @Column(name = "last_name")
+    private String lastName;
+
+    @NotBlank(message = "Date of birth is required")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private String dateOfBirth;
 
     @OneToOne
     @JoinColumn(name = "user_credential_id")
