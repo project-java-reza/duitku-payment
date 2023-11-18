@@ -59,7 +59,7 @@ public class AuthServiceImpl implements AuthService {
                     .lastName(authRequest.getLastName())
                     .mobileNumber(authRequest.getMobileNumber())
                     .email(authRequest.getEmail())
-                    .dateOfBirth(authRequest.getDateOfBirth())
+                    .dateOfBirth(authRequest.getDateOfbirth())
                     .userCredential(credential)
                     .build();
             userService.create(user);
@@ -73,6 +73,7 @@ public class AuthServiceImpl implements AuthService {
                     .mobileNumber(user.getMobileNumber())
                     .balance(wallet.getBalance())
                     .email(user.getEmail())
+                    .dateOfBirth(user.getDateOfBirth())
                     .build();
 
         } catch (DataIntegrityViolationException exception) {
@@ -93,11 +94,11 @@ public class AuthServiceImpl implements AuthService {
             userCredentialRepository.saveAndFlush(credential);
 
             Admin admin = Admin.builder()
-                    .firstname(authRequest.getFirstName())
+                    .firstName(authRequest.getFirstName())
                     .lastName(authRequest.getLastName())
                     .mobileNumber(authRequest.getMobileNumber())
                     .email(authRequest.getEmail())
-                    .dateOfBirth(authRequest.getDateOfBirth())
+                    .dateOfBirth(authRequest.getDateOfbirth())
                     .userCredential(credential)
                     .build();
             adminService.create(admin);
@@ -106,11 +107,12 @@ public class AuthServiceImpl implements AuthService {
             wallet.setBalance(0.0);
 
             return RegisterResponse.builder()
-                    .firstName(admin.getFirstname())
+                    .firstName(admin.getFirstName())
                     .lastName(admin.getLastName())
                     .mobileNumber(admin.getMobileNumber())
                     .balance(wallet.getBalance())
                     .email(admin.getEmail())
+                    .dateOfBirth(admin.getDateOfBirth())
                     .build();
 
         } catch (DataIntegrityViolationException exception) {

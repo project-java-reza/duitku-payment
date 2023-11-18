@@ -17,5 +17,5 @@ public class AuthRequest {
     private String firstName;
     private String lastName;
     private String mobileNumber;
-    private LocalDate dateOfBirth;
+    private String dateOfbirth;
 }

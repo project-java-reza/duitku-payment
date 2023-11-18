@@ -15,4 +15,6 @@ public class RegisterResponse {
     private String lastName;
     private String mobileNumber;
     private Double balance;
+    private String dateOfBirth;
 }
+
