@@ -59,6 +59,7 @@ public class AuthServiceImpl implements AuthService {
                     .lastName(authRequest.getLastName())
                     .mobileNumber(authRequest.getMobileNumber())
                     .email(authRequest.getEmail())
+                    .dateOfBirth(authRequest.getDateOfBirth())
                     .userCredential(credential)
                     .build();
             userService.create(user);
@@ -96,6 +97,7 @@ public class AuthServiceImpl implements AuthService {
                     .lastName(authRequest.getLastName())
                     .mobileNumber(authRequest.getMobileNumber())
                     .email(authRequest.getEmail())
+                    .dateOfBirth(authRequest.getDateOfBirth())
                     .userCredential(credential)
                     .build();
             adminService.create(admin);
