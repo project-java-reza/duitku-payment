@@ -1,12 +1,16 @@
 package com.enigma.duitku.entity;
 
+import com.enigma.duitku.entity.constant.EWalletType;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "m_admin")
@@ -18,13 +22,10 @@ import javax.validation.constraints.*;
 public class Admin {
 
     @Id
-    @GenericGenerator(strategy = "uuid2", name= "system-uuid")
-    @GeneratedValue(generator = "system-uuid")
-    private String id;
-
-    @NotBlank(message = "Mobile number is required")
-    @Size(min = 10, max = 12, message = "Invalid mobile number")
-    @Column(name = "mobile_number", unique = true)
+    @NotBlank(message= "Mobile number is required")
+    @NotEmpty(message= "Mobile number is required")
+    @Size(min = 10, max= 12, message = "Mobile number must be between 10 and 12 characters")
+    @Column(name = "mobile_number")
     private String mobileNumber;
 
     @NotBlank(message = "Email is required")
@@ -46,6 +47,17 @@ public class Admin {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private String dateOfBirth;
 
+    @CreatedDate
+    @Column(name = "created_at")
+    protected LocalDateTime createdAt;
+
+    @LastModifiedDate
+    @Column(name = "updated_at")
+    protected LocalDateTime updatedAt;
+
+    @Enumerated(EnumType.STRING)
+    private EWalletType walletType;
+
     @OneToOne
     @JoinColumn(name = "user_credential_id")
     private UserCredential userCredential;
@@ -55,5 +67,4 @@ public class Admin {
 
     @OneToOne(cascade = CascadeType.ALL)
     private Address address;
-
 }
