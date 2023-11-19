@@ -1,5 +1,6 @@
 package com.enigma.duitku.controller;
 
+import com.enigma.duitku.entity.Admin;
 import com.enigma.duitku.entity.User;
 import com.enigma.duitku.exception.UserException;
 import com.enigma.duitku.model.response.CommonResponse;
@@ -55,13 +56,23 @@ public class UserController {
                         .build());
     }
 
-    @GetMapping(path = "{id}")
+    @GetMapping(path = "/user/{id}")
     public ResponseEntity<?> getUserId(@PathVariable String id) {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(CommonResponse.<User>builder()
                         .statusCode(HttpStatus.OK.value())
                         .message("Successfully get user by id")
                         .data(userService.getById(id))
+                        .build());
+    }
+
+    @GetMapping(path = "/admin/{id}")
+    public ResponseEntity<?> getAdminId(@PathVariable String id) {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(CommonResponse.<Admin>builder()
+                        .statusCode(HttpStatus.OK.value())
+                        .message("Successfully get Admin by id")
+                        .data(adminService.getByIdAdmin(id))
                         .build());
     }
 
