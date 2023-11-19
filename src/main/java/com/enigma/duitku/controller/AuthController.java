@@ -62,9 +62,9 @@ public class AuthController {
             // Kirim OTP
             otpService.sendOtp(mobileNumber, otpCode);
 
-            return ResponseEntity.ok("OTP berhasil dikirim ke " + mobileNumber);
+            return ResponseEntity.ok("OTP successfully sent to " + mobileNumber);
         } catch (Exception e) {
-            return ResponseEntity.status(500).body("Gagal mengirim OTP");
+            return ResponseEntity.status(500).body("Failed to send OTP");
         }
     }
 
