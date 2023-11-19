@@ -1,7 +1,7 @@
 package com.enigma.duitku.entity;
 
+import com.enigma.duitku.entity.constant.EWalletType;
 import lombok.*;
-import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -23,6 +23,9 @@ public class Wallet {
 
     @Column(nullable = false)
     private Double balance;
+
+    @Enumerated(EnumType.STRING)
+    private EWalletType walletType;
 
     @OneToMany(cascade = CascadeType.ALL)
     private List<Transaction> listOfTransactions = new ArrayList<>();
