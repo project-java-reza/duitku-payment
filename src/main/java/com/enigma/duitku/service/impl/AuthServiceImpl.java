@@ -3,6 +3,7 @@ package com.enigma.duitku.service.impl;
 import com.enigma.duitku.entity.*;
 import com.enigma.duitku.entity.constant.ERole;
 import com.enigma.duitku.entity.constant.EWalletType;
+import com.enigma.duitku.exception.OtpVerificationException;
 import com.enigma.duitku.exception.UserException;
 import com.enigma.duitku.model.request.AuthRequest;
 import com.enigma.duitku.model.response.LoginResponse;
@@ -10,12 +11,10 @@ import com.enigma.duitku.model.response.RegisterResponse;
 import com.enigma.duitku.repository.UserCredentialRepository;
 import com.enigma.duitku.security.BCryptUtils;
 import com.enigma.duitku.security.JwtUtils;
-import com.enigma.duitku.service.AdminService;
-import com.enigma.duitku.service.AuthService;
-import com.enigma.duitku.service.RoleService;
-import com.enigma.duitku.service.UserService;
+import com.enigma.duitku.service.*;
 import com.enigma.duitku.util.ValidationUtil;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.http.HttpStatus;
@@ -34,6 +33,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class AuthServiceImpl implements AuthService {
 
     private final UserCredentialRepository userCredentialRepository;
@@ -41,46 +41,55 @@ public class AuthServiceImpl implements AuthService {
     private final UserService userService;
     private final RoleService roleService;
     private final AdminService adminService;
+    private final OtpService otpService;
     private final ValidationUtil validationUtil;
     private final AuthenticationManager authenticationManager;
     private final JwtUtils jwtUtils;
 
     @Override
     @Transactional(rollbackOn = Exception.class)
-    public RegisterResponse registerUsers(AuthRequest authRequest) throws UserException {
+    public RegisterResponse registerUsers(AuthRequest authRequest, String otpCode) throws UserException, OtpVerificationException {
         try {
-            Role role = roleService.getOrSave(ERole.ROLE_USER);
-            UserCredential credential= UserCredential.builder()
-                    .mobileNumber(authRequest.getMobileNumber())
-                    .password(bCryptUtils.hashPassword(authRequest.getPassword()))
-                    .roles(List.of(role))
-                    .build();
-            userCredentialRepository.saveAndFlush(credential);
+            log.info("OTP CODE: " + otpCode);
+            if(otpService.verifyOtp(authRequest.getMobileNumber(), otpCode)) {
+                Role role = roleService.getOrSave(ERole.ROLE_USER);
+                UserCredential credential= UserCredential.builder()
+                        .mobileNumber(authRequest.getMobileNumber())
+                        .password(bCryptUtils.hashPassword(authRequest.getPassword()))
+                        .roles(List.of(role))
+                        .build();
+                userCredentialRepository.saveAndFlush(credential);
 
-            User user = User.builder()
-                    .firstName(authRequest.getFirstName())
-                    .lastName(authRequest.getLastName())
-                    .mobileNumber(authRequest.getMobileNumber())
-                    .email(authRequest.getEmail())
-                    .dateOfBirth(authRequest.getDateOfbirth())
-                    .walletType(EWalletType.BASIC)
-                    .createdAt(LocalDateTime.now())
-                    .updatedAt(LocalDateTime.now())
-                    .userCredential(credential)
-                    .build();
-            userService.create(user);
+                User user = User.builder()
+                        .firstName(authRequest.getFirstName())
+                        .lastName(authRequest.getLastName())
+                        .mobileNumber(authRequest.getMobileNumber())
+                        .email(authRequest.getEmail())
+                        .dateOfBirth(authRequest.getDateOfbirth())
+                        .walletType(EWalletType.BASIC)
+                        .createdAt(LocalDateTime.now())
+                        .updatedAt(LocalDateTime.now())
+                        .userCredential(credential)
+                        .build();
+                userService.create(user);
 
-            Wallet wallet = new Wallet();
-            wallet.setBalance(0.0);
+                // hapus OTP setelah di verifikasi
+                otpService.clearOtp(authRequest.getMobileNumber());
 
-            return RegisterResponse.builder()
-                    .firstName(user.getFirstName())
-                    .lastName(user.getLastName())
-                    .mobileNumber(user.getMobileNumber())
-                    .balance(wallet.getBalance())
-                    .email(user.getEmail())
-                    .dateOfBirth(user.getDateOfBirth())
-                    .build();
+                Wallet wallet = new Wallet();
+                wallet.setBalance(0.0);
+
+                return RegisterResponse.builder()
+                        .firstName(user.getFirstName())
+                        .lastName(user.getLastName())
+                        .mobileNumber(user.getMobileNumber())
+                        .balance(wallet.getBalance())
+                        .email(user.getEmail())
+                        .dateOfBirth(user.getDateOfBirth())
+                        .build();
+            } else {
+                throw new OtpVerificationException("Kode OTP tidak valid");
+            }
 
         } catch (DataIntegrityViolationException exception) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "User already exists");

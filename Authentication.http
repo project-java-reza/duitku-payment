@@ -23,7 +23,7 @@ Content-Type: application/json
 }
 
 ### Register User
-POST http://localhost:8080/api/auth/register/user
+POST http://localhost:8080/api/auth/register/user?otpCode=6801
 Content-Type: application/json
 
 {
@@ -34,6 +34,10 @@ Content-Type: application/json
   "lastName": "ardiansyah",
   "dateOfbirth": "2000-01-01"
 }
+
+### Send Code OTP
+POST http://localhost:8080/api/auth/send?mobileNumber=08965343434
+Content-Type: application/json
 
 ### Login User
 
