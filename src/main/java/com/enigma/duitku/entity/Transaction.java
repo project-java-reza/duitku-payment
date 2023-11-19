@@ -19,10 +19,7 @@ public class Transaction {
     @Id
     @GenericGenerator(strategy = "uuid2", name= "system-uuid")
     @GeneratedValue(generator = "system-uuid")
-    private String id;
-
-    @Column(name = "local_date", nullable = false)
-    private LocalDateTime localDate;
+    protected String id;
 
     @Column(name = "wallet_id", length = 50)
     private String walletId;
