@@ -2,6 +2,7 @@ package com.enigma.duitku.service.impl;
 
 import com.enigma.duitku.entity.*;
 import com.enigma.duitku.entity.constant.ERole;
+import com.enigma.duitku.entity.constant.EWalletType;
 import com.enigma.duitku.exception.UserException;
 import com.enigma.duitku.model.request.AuthRequest;
 import com.enigma.duitku.model.response.LoginResponse;
@@ -16,6 +17,7 @@ import com.enigma.duitku.service.UserService;
 import com.enigma.duitku.util.ValidationUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -26,6 +28,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.transaction.Transactional;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -60,6 +63,9 @@ public class AuthServiceImpl implements AuthService {
                     .mobileNumber(authRequest.getMobileNumber())
                     .email(authRequest.getEmail())
                     .dateOfBirth(authRequest.getDateOfbirth())
+                    .walletType(EWalletType.BASIC)
+                    .createdAt(LocalDateTime.now())
+                    .updatedAt(LocalDateTime.now())
                     .userCredential(credential)
                     .build();
             userService.create(user);
@@ -99,6 +105,9 @@ public class AuthServiceImpl implements AuthService {
                     .mobileNumber(authRequest.getMobileNumber())
                     .email(authRequest.getEmail())
                     .dateOfBirth(authRequest.getDateOfbirth())
+                    .walletType(EWalletType.PREMIUM)
+                    .createdAt(LocalDateTime.now())
+                    .updatedAt(LocalDateTime.now())
                     .userCredential(credential)
                     .build();
             adminService.create(admin);
