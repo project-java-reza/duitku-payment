@@ -1,0 +1,42 @@
+### Address Admin
+
+POST http://localhost:8080/api/address/addadmin
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIwODUxNTY4MTE5NzkiLCJpYXQiOjE3MDAzNzczNDMsImV4cCI6MTcwMDM4NTM0M30.n6jk2547N_ccfSJemagCNfNKQutoNa405e1F9kLILVr7RBLHQxB_Ave02qyj_VKc8HQBmS73Q4GcCBVSmr1VDQ
+
+{
+  "streetName" : "Jalan Raya",
+  "city" : "Tangerang",
+  "state": "Banten",
+  "postalCode": "15610"
+}
+
+### Address User
+
+POST http://localhost:8080/api/address/adduser
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIwODk2NTM0MzQzNCIsImlhdCI6MTcwMDM3NTIyNywiZXhwIjoxNzAwMzgzMjI3fQ.0OJYgC8rQQV1eRhIkgFz5T-bAyvsNi3nLap4ubCkGAJebuxQI7-7ZJ92erV-1Bn1zbOjTC-uPyLatXvwCC_6Pw
+
+{
+  "streetName" : "Jalan Raya",
+  "city" : "Tangerang",
+  "state": "Banten",
+  "postalCode": "15610"
+}
+
+
+
+### Get Address id Admin
+GET http://localhost:8080/api/admin/address/118980a7-f772-4924-bb94-eef4431195a0
+Accept: application/json
+
+
+### Get Address id User
+GET http://localhost:8080/api/address/2e077a6f-ddce-4ae1-8ce7-757f9a6885cf
+Accept: application/json
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIwODk2NTM0MzQzNCIsImlhdCI6MTcwMDM3NTIyNywiZXhwIjoxNzAwMzgzMjI3fQ.0OJYgC8rQQV1eRhIkgFz5T-bAyvsNi3nLap4ubCkGAJebuxQI7-7ZJ92erV-1Bn1zbOjTC-uPyLatXvwCC_6Pw
+
+
+### Delete Address Id User
+DELETE http://localhost:8080/api/address/delete?id=2e077a6f-ddce-4ae1-8ce7-757f9a6885cf
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIwODk2NTM0MzQzNCIsImlhdCI6MTcwMDM3NTIyNywiZXhwIjoxNzAwMzgzMjI3fQ.0OJYgC8rQQV1eRhIkgFz5T-bAyvsNi3nLap4ubCkGAJebuxQI7-7ZJ92erV-1Bn1zbOjTC-uPyLatXvwCC_6Pw
