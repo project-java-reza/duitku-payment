@@ -68,11 +68,13 @@ class UserServiceImplTest {
         DataSource dataSource = new HikariDataSource(config);
 
         AuthRequest authRequest = new AuthRequest();
-        authRequest.setEmail("reza@gmail.com");
         authRequest.setFirstName("rizqi");
         authRequest.setLastName("reza ardiansyah");
-        authRequest.setPassword("Password@123");
         authRequest.setMobileNumber("0851568119779");
+        authRequest.setEmail("reza@gmail.com");
+        authRequest.setPassword("Abc@123");
+        authRequest.setAddress("1");
+        authRequest.setWalletId("01234567778");
 
         Role role = Role.builder()
                 .role(ERole.ROLE_USER)
@@ -95,6 +97,8 @@ class UserServiceImplTest {
 
         Wallet wallet = new Wallet();
         wallet.setBalance(0.0);
+        wallet.setId(user.getMobileNumber());
+        user.setWallet(wallet);
 
         when(roleService.getOrSave(ERole.ROLE_USER)).thenReturn(role);
         when(userCredentialRepository.saveAndFlush(credential)).thenReturn(credential);
@@ -102,11 +106,13 @@ class UserServiceImplTest {
 
         RegisterResponse registerResponse = authServiceImpl.registerUsers(authRequest);
 
-        assertEquals(authRequest.getEmail(), registerResponse.getEmail());
+        assertEquals(authRequest.getAddress(), registerResponse.getAddress());
+        assertEquals(authRequest.getWalletId(), registerResponse.getWalletId());
         assertEquals(authRequest.getFirstName(), registerResponse.getFirstName());
         assertEquals(authRequest.getLastName(), registerResponse.getLastName());
         assertEquals(authRequest.getMobileNumber(), registerResponse.getMobileNumber());
         assertEquals(wallet.getBalance(), registerResponse.getBalance());
+        assertEquals(authRequest.getEmail(), registerResponse.getEmail());
 
         verify(roleService, times(1)).getOrSave(ERole.ROLE_USER);
         verify(bCryptUtils, times(1)).hashPassword("password");
