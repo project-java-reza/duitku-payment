@@ -1,6 +1,7 @@
 package com.enigma.duitku.service.impl;
 
 import com.enigma.duitku.entity.Address;
+import com.enigma.duitku.entity.Admin;
 import com.enigma.duitku.entity.User;
 import com.enigma.duitku.entity.UserDetailImpl;
 import com.enigma.duitku.exception.ConflictException;
@@ -8,9 +9,11 @@ import com.enigma.duitku.exception.UserException;
 import com.enigma.duitku.model.request.AddressRequest;
 import com.enigma.duitku.model.response.AddressResponse;
 import com.enigma.duitku.repository.AddressRepository;
+import com.enigma.duitku.repository.AdminRepository;
 import com.enigma.duitku.repository.UserRepository;
 import com.enigma.duitku.security.JwtUtils;
 import com.enigma.duitku.service.AddressService;
+import com.enigma.duitku.service.AdminService;
 import com.enigma.duitku.service.UserService;
 import com.enigma.duitku.util.AccountUtil;
 import lombok.RequiredArgsConstructor;
@@ -31,10 +34,11 @@ import java.util.List;
 public class AddressServiceImpl implements AddressService {
 
     private final JwtUtils jwtUtils;
-
     private final UserService userService;
+    private final AdminService adminService;
     private final AddressRepository addressRepository;
     private final UserRepository userRepository;
+    private final AdminRepository adminRepository;
     private final AccountUtil accountUtil;
 
     @Override
@@ -45,6 +49,7 @@ public class AddressServiceImpl implements AddressService {
 
         // TODO 2 : Retrieve the user object from the userService based on the extracted user ID.
         User user = userService.getById(loggedInUserId);
+        Admin admin = adminService.getById(loggedInUserId);
 
         // TODO 3 : Check if the user object is not null.
         if(user != null) {
@@ -62,12 +67,14 @@ public class AddressServiceImpl implements AddressService {
 
             // TODO 6 : Set the user's address to the newly created address.
             user.setAddress(address);
+            admin.setAddress(address);
 
             // TODO 7: Save the new address to the addressRepository.
             addressRepository.save(address);
 
             // TODO 8 : Save the updated user object to the userRepository.
             userRepository.save(user);
+            adminRepository.save(admin);
 
             // TODO 9 : Build and return an AddressResponse based on the user's address.
             return AddressResponse.builder()

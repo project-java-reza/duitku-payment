@@ -8,9 +8,9 @@ import com.enigma.duitku.model.response.BankAccountResponse;
 import com.enigma.duitku.model.response.CommonResponse;
 import com.enigma.duitku.model.response.PagingResponse;
 import com.enigma.duitku.security.AuthTokenFilter;
-import com.enigma.duitku.service.AddressService;
+import com.enigma.duitku.service.AddressAdminService;
+import com.enigma.duitku.service.AddressUserService;
 import lombok.RequiredArgsConstructor;
-import org.apache.coyote.Response;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,16 +23,18 @@ import javax.servlet.http.HttpServletRequest;
 @RequestMapping("/api/address")
 public class AddressController {
 
-    private final AddressService addressService;
+    private final AddressAdminService addressAdminService;
+    
+    private final AddressUserService addressUserService;
 
     private final AuthTokenFilter authTokenFilter;
 
-    @PostMapping("/add")
-    public ResponseEntity<?> addAddress(@RequestBody AddressRequest addressRequest, HttpServletRequest httpServletRequest) throws UserException {
+    @PostMapping("/adduser")
+    public ResponseEntity<?> addAddressUser(@RequestBody AddressRequest addressRequest, HttpServletRequest httpServletRequest) throws UserException {
         try {
             String jwtToken = authTokenFilter.parseJwt(httpServletRequest);
             if(jwtToken != null) {
-                AddressResponse addressResponse = addressService.addAddress(addressRequest, jwtToken);
+                AddressResponse addressResponse = addressUserService.addAddressUser(addressRequest, jwtToken);
 
                 return ResponseEntity.status(HttpStatus.CREATED)
                         .body(CommonResponse.builder()
@@ -48,13 +50,44 @@ public class AddressController {
             }
 
         } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.CONFLICT)
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(CommonResponse.<BankAccountResponse>builder()
-                            .statusCode(HttpStatus.CONFLICT.value())
+                            .statusCode(HttpStatus.NOT_FOUND.value())
                             .message("Failed add address " + e.getMessage())
                             .build());
         }
     }
+
+    @PostMapping("/addadmin")
+    public ResponseEntity<?> addAddressAdmin(@RequestBody AddressRequest addressRequest, HttpServletRequest httpServletRequest) throws UserException {
+
+        try {
+            String jwtToken = authTokenFilter.parseJwt(httpServletRequest);
+            if(jwtToken != null) {
+                AddressResponse addressResponse = addressAdminService.addAddressAdmin(addressRequest, jwtToken);
+
+                return ResponseEntity.status(HttpStatus.CREATED)
+                        .body(CommonResponse.builder()
+                                .statusCode(HttpStatus.CREATED.value())
+                                .data(addressResponse)
+                                .message("Successfully created address")
+                                .build());
+            } else {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                        .body(CommonResponse.builder()
+                                .statusCode(HttpStatus.UNAUTHORIZED.value())
+                                .build());
+            }
+
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(CommonResponse.<BankAccountResponse>builder()
+                            .statusCode(HttpStatus.NOT_FOUND.value())
+                            .message("Failed add address " + e.getMessage())
+                            .build());
+        }
+    }
+
 
     @PutMapping("/update")
     public ResponseEntity<?> updateAddress(@RequestBody Address address, HttpServletRequest httpServletRequest) throws UserException {
@@ -65,7 +98,7 @@ public class AddressController {
                         .body(CommonResponse.<Address>builder()
                                 .statusCode(HttpStatus.OK.value())
                                 .message("Successfully update customer")
-                                .data(addressService.updateAddress(address, jwtToken))
+                                .data(addressUserService.updateAddress(address, jwtToken))
                                 .build());
             } else {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
@@ -90,7 +123,7 @@ public class AddressController {
                     .body(CommonResponse.<Address>builder()
                             .statusCode(HttpStatus.OK.value())
                             .message("Successfully get customer by id")
-                            .data(addressService.getAddressId(id))
+                            .data(addressUserService.getAddressId(id))
                             .build());
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
@@ -107,7 +140,7 @@ public class AddressController {
         try{
             String jwtToken = authTokenFilter.parseJwt(httpServletRequest);
             if(jwtToken != null) {
-                addressService.removeAddress(id, jwtToken);
+                addressUserService.removeAddress(id, jwtToken);
                 return ResponseEntity.status(HttpStatus.OK)
                         .body(CommonResponse.builder()
                                 .statusCode(HttpStatus.OK.value())
@@ -137,7 +170,7 @@ public class AddressController {
     ){
 
         try {
-            Page<AddressResponse> addressResponses = addressService.viewAllAddress(page, size);
+            Page<AddressResponse> addressResponses = addressUserService.viewAllAddress(page, size);
             PagingResponse pagingResponse = PagingResponse.builder()
                     .currentPage(page)
                     .totalPage(addressResponses.getTotalPages())
