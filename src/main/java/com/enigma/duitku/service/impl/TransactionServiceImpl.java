@@ -66,7 +66,6 @@ public class TransactionServiceImpl implements TransactionService {
             Transaction transaction = new Transaction();
 
             transaction.setAmount(request.getAmount());
-            transaction.setLocalDate(LocalDateTime.now());
             transaction.setDescription(request.getDescription());
             transaction.setReceiver(request.getReceiver());
             transaction.setType(request.getTransactionType());
