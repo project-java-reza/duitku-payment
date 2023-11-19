@@ -6,9 +6,9 @@ import com.enigma.duitku.model.request.AddressRequest;
 import com.enigma.duitku.model.response.AddressResponse;
 import org.springframework.data.domain.Page;
 
-public interface AddressService {
+public interface AddressUserService {
 
-    AddressResponse addAddress(AddressRequest addressRequest, String token) throws UserException;
+    AddressResponse addAddressUser(AddressRequest addressRequest, String token) throws UserException;
     Address updateAddress(Address address, String token) throws UserException;
     Address getAddressId(String id);
     void removeAddress(String id, String token) throws UserException;
