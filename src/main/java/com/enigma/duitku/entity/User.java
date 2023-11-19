@@ -1,10 +1,14 @@
 package com.enigma.duitku.entity;
 
+import com.enigma.duitku.entity.constant.EWalletType;
 import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -42,9 +46,20 @@ public class User {
     @Column(name = "date_of_birth")
     private String dateOfBirth;
 
+    @CreatedDate
+    @Column(name = "created_at")
+    protected LocalDateTime createdAt;
+
+    @LastModifiedDate
+    @Column(name = "updated_at")
+    protected LocalDateTime updatedAt;
+
     @OneToOne
     @JoinColumn(name = "user_credential_id")
     private UserCredential userCredential;
+
+    @Enumerated(EnumType.STRING)
+    private EWalletType walletType;
 
     @OneToOne(cascade = CascadeType.ALL)
     private Wallet wallet;
