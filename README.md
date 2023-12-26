@@ -1,6 +1,32 @@
-# Duitku Payment System
+# Duitku Wallet
+## Duitku Wallet is an application that has `top up`, `transfer`, `beneficiary`, `online loans`, 'add address', 'bill payment' features as the main feature.
 
-The Digital Wallet Application's REST API, developed by Duitku, offers users the convenience and flexibility of being able to transfer money to and from their digital wallet and linked bank accounts. The API also allows for transactions with other registered users on the Duitku platform and the ability to make payments directly to saved beneficiaries through their bank accounts. 
+## Download the Repository
+- Download the repository to your computer using the `git clone` command. Url of the repository can be seen in the desired repository.
+```
+git clone <repository url> <destination folder>
+```
+
+#### Example :
+```
+git clone https://github.com/project-java-reza/duitku-payment.git
+```
+
+## How to run Test:
+1. Make sure you have installed the Java Development Kit (JDK) at least `Version 11` and Maven on your computer.
+2. Open a terminal or command prompt and navigate to the project directory Example: `final-project-duitku`.
+3. Run the following command to run all tests:
+```
+mvn clean test
+```
+
+## How to Run Application:
+```
+mvn spring-boot:run
+```
+
+## Noted:
+- Make sure you have done the proper configuration in the `application.properties` file.
 
 ## Tech Stack
 - Java
@@ -21,7 +47,6 @@ The Digital Wallet Application's REST API, developed by Duitku, offers users the
 - Spring Security
 - JWT
 - Spring Boot Validation
-
 
 ## Features
 - Transfer money to and from digital wallet and linked bank accounts
@@ -56,37 +81,6 @@ The Digital Wallet Application's REST API, developed by Duitku, offers users the
     - Endpoint for Get All Transaction
 
 <a href="https://ibb.co/dbXMcRS"><img src="https://i.ibb.co/8zGsBHJ/Duitku-drawio.png" alt="Duitku-drawio" border="0"></a>
-
-
-# Duitku Wallet
-## Duitku Wallet is an application that has `top up`, `transfer`, `beneficiary`, `online loans`, 'add address', 'bill payment' features as the main feature.
-
-## Download the Repository
-- Download the repository to your computer using the `git clone` command. Url of the repository can be seen in the desired repository.
-```
-git clone <repository url> <destination folder>
-```
-
-#### Example :
-```
-git clone https://github.com/project-java-reza/duitku-payment.git
-```
-
-## How to run Test:
-1. Make sure you have installed the Java Development Kit (JDK) at least `Version 11` and Maven on your computer.
-2. Open a terminal or command prompt and navigate to the project directory Example: `final-project-duitku`.
-3. Run the following command to run all tests:
-```
-mvn clean test
-```
-
-## How to Run Application:
-```
-mvn spring-boot:run
-```
-
-## Noted:
-- Make sure you have done the proper configuration in the `application.properties` file.
 
 # API Spec
 ## Authentication
